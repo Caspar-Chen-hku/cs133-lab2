@@ -52,6 +52,7 @@ void GemmSequential(const float a[kI][kK], const float b[kK][kJ],
   }
 }
 
+
 void Init(float a[kI][kK], float b[kK][kJ]) {
   clog << "Problem size: " << kI << " x " << kK << " x " <<  kJ << endl;
 

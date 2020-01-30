@@ -6,6 +6,6 @@ test: gemm
 	./$^ parallel parallel-blocked
 
 gemm: $(SRCS)
-	$(CXX) $(CXXFLAGS) -o $@ $(filter %.cpp %.a, $^)
+	$(CXX) $(CXXFLAGS) -o $@ $(filter %.cpp %.a, $^) -march=native
 
 include ../makefile

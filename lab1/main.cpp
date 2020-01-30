@@ -7,6 +7,8 @@
 using std::clog;
 using std::endl;
 
+// random comments
+
 int main(int argc, char** argv) {
   // Allocate memory on heap to avoid stack overflow.
   static float a[kI][kK];
@@ -28,6 +30,7 @@ int main(int argc, char** argv) {
       parallel_blocked = true;
     }
   }
+
 
   Init(a, b);
 
@@ -54,6 +57,7 @@ int main(int argc, char** argv) {
   if (parallel_blocked) {
     clog << "\nRun blocked parallel GEMM with OpenMP\n";
     Benchmark(&GemmParallelBlocked, a, b, c);
+    
     if (Diff(c_base, c) != 0) {
       fail = true;
     }
