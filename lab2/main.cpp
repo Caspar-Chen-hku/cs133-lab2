@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
     clog << "Perf: " << gflops << " GFlops\n";
 
     bool fail = false;
-    if (Diff(c_base, c_buffer) != 0) {
+    if (Diff(c_base, c) != 0) {
       fail = true;
     }
 

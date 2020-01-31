@@ -80,6 +80,6 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
         }
   }
 
-  MPI_Gather(c_buffer, cCount, MPI_FLOAT, c, cCount*numproc, MPI_FLOAT, kRoot, MPI_COMM_WORLD);
+  MPI_Gather(c_buffer, cCount, MPI_FLOAT, c, cCount*numproc, MPI_FLOAT, 0, MPI_COMM_WORLD);
 
 }
