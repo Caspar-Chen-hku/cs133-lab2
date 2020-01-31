@@ -2,6 +2,8 @@
 
 #include <mpi.h>
 #include <stdlib.h>
+#include <iostream>
+
 
 
 #include "../lab1/gemm.h"
