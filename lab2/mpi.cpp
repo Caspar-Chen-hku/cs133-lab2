@@ -131,20 +131,31 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   }
 */
 
+index_a = 0;
+index_b = 0;
+index_c = 0;
+
 for (int i=0; i< kI/4; i++){
   if (rank==0){
     std::memset(c[i], 0, sizeof(float) * kJ);
   }
+      index_b = 0;
         for (int k=0; k< kK; k++){
           for (int j=0; j< kJ; j++)
           {
               if (rank==0){
                 c[i][j] += a[i][k] * b[k][j];
               }else{
-                c_buffer[i*kJ+j] += a_buffer[i*kK+k]*b_buffer[k*kJ+j];
-              }          
+                c_buffer[index_c] += a_buffer[index_a]*b_buffer[index_b];
+              }
+              index_c++;    
+              index_b++;      
           }
+          index_a++;
+          index_b += kJ;
         }
+        index_c += kJ;
+        index_a += kK;
     }
 
 
