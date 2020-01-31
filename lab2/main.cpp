@@ -39,15 +39,15 @@ int main(int argc, char** argv) {
     float (*c_buffer)[kJ] = nullptr;
 
     for (int i=0; i<kI/4; i++){
-      a_buffer[i] = std:aligned_alloc(32, kK);
+      a_buffer[i] = std::aligned_alloc(32, kK);
     }
 
     for (int i=0; i<kK; i++){
-      b_buffer[i] = std:aligned_alloc(32, kJ);
+      b_buffer[i] = std::aligned_alloc(32, kJ);
     }
 
     for (int i=0; i<kI/4; i++){
-      c_buffer[i] = std:aligned_alloc(32, kJ);
+      c_buffer[i] = std::aligned_alloc(32, kJ);
     }
 
     int aCount = kI*kK/numproc;
