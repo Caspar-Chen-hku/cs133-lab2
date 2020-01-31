@@ -93,7 +93,7 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   int BLOCK_SIZE_K = kK/64;
   int index_a, index_b, index_c;
   */
- 
+
   /*
   int BLOCK_SIZE_I = 64;
   int BLOCK_SIZE_J = 1024;
@@ -127,10 +127,6 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   }
 */
 
-
-index_a = 0;
-index_b = 0;
-index_c = 0;
 
 for (int i=0; i< kI/4; i++){
   if (rank==0){
