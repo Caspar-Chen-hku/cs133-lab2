@@ -3,6 +3,7 @@
 #include <mpi.h>
 #include <stdlib.h>
 #include <iostream>
+#include <cstring>
 
 
 
@@ -97,11 +98,18 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   int BLOCK_SIZE_K = 8;
   */
 
+ if (rank != 0){
+   std:memset(c_buffer, 0, sizeof(float) * cCount);
+ }
+
     for (int i=0; i< kI/4; i+=BLOCK_SIZE_I){
         for (int k=0; k< kK; k+=BLOCK_SIZE_K){
           for (int j=0; j< kJ; j+=BLOCK_SIZE_J){
             for (int i0=i; i0<i+BLOCK_SIZE_I; i0++){
               index_a = i0*kK+k;
+              if (rank == 0){
+                std::memset(c[i0], 0, sizeof(float) * kJ);
+              }
               for (int k0=k; k0<k+BLOCK_SIZE_K; k0++){
                 index_b = k0*kJ+j;
                 index_c = i0*kJ+j;
@@ -120,6 +128,9 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
           }
         }
   }
+
+
+
 
   clog << "calculated\n";
 
