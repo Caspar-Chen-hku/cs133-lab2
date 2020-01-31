@@ -9,7 +9,7 @@ using std::clog;
 using std::endl;
 
 int main(int argc, char** argv) {
-  int rank, numproc;
+  int rank;
   const int kRoot = 0;
   float (*a)[kK] = nullptr;
   float (*b)[kJ] = nullptr;
@@ -17,7 +17,6 @@ int main(int argc, char** argv) {
   float (*c_base)[kJ] = nullptr;
 
   MPI_Init(&argc, &argv);
-  MPI_Comm_size(MPI_COMM_WORLD, &numproc);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
   //clog << "\nrank: " << rank << ", numproc: " << numproc << "\n";
@@ -35,39 +34,13 @@ int main(int argc, char** argv) {
     clog << "\nRun parallel GEMM with MPI\n";
   }
 
-    //float **a_buffer = new float*[kI/4];
-    //float **b_buffer = new float*[kK];
-    //float **c_buffer = new float*[kI/4];
-
-    float (*a_buffer)[kK] = nullptr;
-    float (*b_buffer)[kJ] = nullptr;
-    float (*c_buffer)[kJ] = nullptr;
-
-    for (int i=0; i<kI/4; i++){
-      a_buffer[i] = (float [kK]) std::aligned_alloc(32, kK);
-    }
-
-    for (int i=0; i<kK; i++){
-      b_buffer[i] = (float [kJ]) std::aligned_alloc(32, kJ);
-    }
-
-    for (int i=0; i<kI/4; i++){
-      c_buffer[i] = (float [kJ]) std::aligned_alloc(32, kJ);
-    }
-
-    int aCount = kI*kK/numproc;
-    int bCount = kK*kJ;
-    MPI_Scatter(a, aCount, MPI_FLOAT, a_buffer, aCount, MPI_FLOAT, kRoot, MPI_COMM_WORLD);
-    MPI_Scatter(b, bCount, MPI_FLOAT, b_buffer, bCount, MPI_FLOAT, kRoot, MPI_COMM_WORLD);
-
   MPI_Barrier(MPI_COMM_WORLD);
   double begin = MPI_Wtime();
-  GemmParallelBlocked(a_buffer, b_buffer, c_buffer);
+  GemmParallelBlocked(a, b, c);
   MPI_Barrier(MPI_COMM_WORLD);
   double end = MPI_Wtime();
 
-  int cCount = kI*kJ/numproc;
-  MPI_Gather(c, cCount, MPI_FLOAT, c_buffer, cCount, MPI_FLOAT, kRoot, MPI_COMM_WORLD);
+  
   if (rank == kRoot) {
 
     double run_time = end - begin;
