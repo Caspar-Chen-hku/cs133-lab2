@@ -87,11 +87,13 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   MPI_Barrier(MPI_COMM_WORLD); 
   clog << "broadcasted\n";
 
+  /*
   int BLOCK_SIZE_I = kI/8;
   int BLOCK_SIZE_J = kJ/4;
   int BLOCK_SIZE_K = kK/64;
   int index_a, index_b, index_c;
-
+  */
+ 
   /*
   int BLOCK_SIZE_I = 64;
   int BLOCK_SIZE_J = 1024;
@@ -102,7 +104,7 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
    std:memset(c_buffer, 0, sizeof(float) * cCount);
  }
 
-
+/*
     for (int i=0; i< kI/4; i+=BLOCK_SIZE_I){
         for (int k=0; k< kK; k+=BLOCK_SIZE_K){
           for (int j=0; j< kJ; j+=BLOCK_SIZE_J){
@@ -123,8 +125,9 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
           }
         }
   }
+*/
 
-/*
+
 index_a = 0;
 index_b = 0;
 index_c = 0;
@@ -133,25 +136,17 @@ for (int i=0; i< kI/4; i++){
   if (rank==0){
     std::memset(c[i], 0, sizeof(float) * kJ);
   }
-      index_b = i*kJ;
         for (int k=0; k< kK; k++){
-          index_c = i*kJ;
           for (int j=0; j< kJ; j++)
           {
               if (rank==0){
                 c[i][j] += a[i][k] * b[k][j];
               }else{
-                c_buffer[index_c] += a_buffer[index_a]*b_buffer[index_b];
-              }
-              index_c++;    
-              index_b++;      
+                c_buffer[i*kJ+j] += a_buffer[i*kK+k]*b_buffer[k*kJ+j];
+              }   
           }
-          index_a++;
         }
-        index_a += kK;
     }
-*/
-
 
   clog << "calculated\n";
 
