@@ -40,7 +40,7 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
 
   //MPI_Gather(c, cCount, MPI_FLOAT, c_buffer, cCount, MPI_FLOAT, kRoot, MPI_COMM_WORLD);
   float *a_buffer = (float*) std::aligned_alloc(32, aCount);
-  float *b_buffer = (float*) std::aligned_alloc(32, bCount);
+  //float *b_buffer = (float*) std::aligned_alloc(32, bCount);
   float *c_buffer = (float*) std::aligned_alloc(32, cCount);
 
   MPI_Scatter(a, aCount*numproc, MPI_FLOAT, a_buffer, aCount, MPI_FLOAT, 0, MPI_COMM_WORLD);
@@ -66,12 +66,13 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
             for (int i0=i; i0<i+BLOCK_SIZE_I; i0++){
               index_a = i0*kK+k;
               for (int k0=k; k0<k+BLOCK_SIZE_K; k0++){
-                index_b = k0*kJ+j;
+                //index_b = k0*kJ+j;
                 index_c = i0*kJ+j;
                 for (int j0=j; j0<j+BLOCK_SIZE_J; j0++){
-                  c_buffer[index_c] += a[index_a] * b[index_b];
+                  c_buffer[index_c] += a_buffer[index_a] * b[k0][j0];
                 }
-                index_b++; index_c++;
+                //index_b++; 
+                index_c++;
               }
               index_a++;
             }
