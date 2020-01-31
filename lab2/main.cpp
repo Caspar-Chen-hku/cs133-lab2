@@ -35,20 +35,24 @@ int main(int argc, char** argv) {
     clog << "\nRun parallel GEMM with MPI\n";
   }
 
-    float **a_buffer = new float*[kI/4];
-    float **b_buffer = new float*[kK];
-    float **c_buffer = new float*[kI/4];
+    //float **a_buffer = new float*[kI/4];
+    //float **b_buffer = new float*[kK];
+    //float **c_buffer = new float*[kI/4];
+
+    float (*a_buffer)[kK] = nullptr;
+    float (*b_buffer)[kJ] = nullptr;
+    float (*c_buffer)[kJ] = nullptr;
 
     for (int i=0; i<kI/4; i++){
-      a_buffer[i] = (float*) std::aligned_alloc(32, kK);
+      a_buffer[i] = (float (*)[kK]) std::aligned_alloc(32, kK);
     }
 
     for (int i=0; i<kK; i++){
-      b_buffer[i] = (float*) std::aligned_alloc(32, kJ);
+      b_buffer[i] = (float (*)[kJ]) std::aligned_alloc(32, kJ);
     }
 
     for (int i=0; i<kI/4; i++){
-      c_buffer[i] = (float*) std::aligned_alloc(32, kJ);
+      c_buffer[i] = (float (*)[kJ]) std::aligned_alloc(32, kJ);
     }
 
     int aCount = kI*kK/numproc;
