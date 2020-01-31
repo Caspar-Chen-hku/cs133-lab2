@@ -33,7 +33,8 @@ int main(int argc, char** argv) {
 
     clog << "\nRun parallel GEMM with MPI\n";
 
-    
+    int aCount = kI*kK/numproc;
+    MPI_Scatter(a, aCount, MPI_FLOAT, a, aCount, MPI_FLOAT, kRoot, MPI_COMM_WORLD);
   }
 
   MPI_Barrier(MPI_COMM_WORLD);
@@ -43,6 +44,9 @@ int main(int argc, char** argv) {
   double end = MPI_Wtime();
 
   if (rank == kRoot) {
+    int cCount = kI*kJ/numproc;
+    MPI_Gather(c, cCount, MPI_FLOAT, c, cCount, MPI_FLOAT, kRoot, MPI_COMM_WORLD);
+
     double run_time = end - begin;
     float gflops = 2.0 * kI * kJ * kK / (run_time * 1e9);
     clog << "Time: " << run_time << " s\n";
