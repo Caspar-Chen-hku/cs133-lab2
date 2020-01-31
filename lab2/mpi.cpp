@@ -71,7 +71,7 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
     MPI_Recv(a_buffer, rows*kK, MPI_FLOAT, 0, 1, MPI_COMM_WORLD, &status);
     MPI_Recv(b_buffer, bCount, MPI_FLOAT, 0, 1, MPI_COMM_WORLD, &status);
   }else{
-    MPI_Recv(b_buffer, bCount, MPI_FLOAT, 0, 1, MPI_COMM_WORLD, &status)
+    MPI_Recv(b_buffer, bCount, MPI_FLOAT, 0, 1, MPI_COMM_WORLD, &status);
     MPI_Recv(a_buffer, rows*kK, MPI_FLOAT, 0, 1, MPI_COMM_WORLD, &status);
   }
 
