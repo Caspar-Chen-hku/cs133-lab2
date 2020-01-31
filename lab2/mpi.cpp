@@ -51,10 +51,11 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
 
   clog << "allocated\n";
 
-  MPI_Scatter(a, aCount*numproc, MPI_FLOAT, a_buffer, aCount, MPI_FLOAT, 0, MPI_COMM_WORLD);
+  MPI_Scatter(a, aCount, MPI_FLOAT, a_buffer, aCount, MPI_FLOAT, 0, MPI_COMM_WORLD);
   clog << "scattered\n";
   MPI_Bcast( (void*) b, bCount, MPI_FLOAT, 0, MPI_COMM_WORLD);
   clog << "broadcasted\n";
+  MPI_Barrier(MPI_COMM_WORLD); 
 
   int BLOCK_SIZE_I = kI/8;
   int BLOCK_SIZE_J = kJ/4;
@@ -92,7 +93,7 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
 
   clog << "calculated\n";
 
-  MPI_Gather(c_buffer, cCount, MPI_FLOAT, c, cCount*numproc, MPI_FLOAT, 0, MPI_COMM_WORLD);
+  MPI_Gather(c_buffer, cCount, MPI_FLOAT, c, cCount, MPI_FLOAT, 0, MPI_COMM_WORLD);
 
   clog << "gathered\n";
 
