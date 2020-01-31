@@ -49,6 +49,8 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   //float *b_buffer = (float*) std::aligned_alloc(32, bCount);
   float *c_buffer = (float*) std::aligned_alloc(32, cCount);
 
+  clog << "allocated\n";
+
   MPI_Scatter(a, aCount*numproc, MPI_FLOAT, a_buffer, aCount, MPI_FLOAT, 0, MPI_COMM_WORLD);
   clog << "scattered\n";
   MPI_Bcast( (void*) b, bCount, MPI_FLOAT, 0, MPI_COMM_WORLD);
