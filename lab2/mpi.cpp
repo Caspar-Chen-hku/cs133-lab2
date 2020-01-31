@@ -39,6 +39,7 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   MPI_Comm_size(MPI_COMM_WORLD, &numproc);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
+  int aCount = kI*kK/numproc;
   int bCount = kK*kJ;
   int cCount = kI*kJ/numproc;
 
@@ -62,7 +63,7 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   MPI_Status status;
   if (rank == 0){
     for (int i=1; i<numproc; i++){
-      MPI_Send(&a[offset][0], rows*kK, MPI_FLOAT, i, 1,
+      MPI_Send(&a[offset][0], aCount, MPI_FLOAT, i, 1,
                    MPI_COMM_WORLD);
       MPI_Send(b, bCount, MPI_FLOAT, i, 1, MPI_COMM_WORLD);
     }
