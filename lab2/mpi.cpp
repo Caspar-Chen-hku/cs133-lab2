@@ -141,7 +141,7 @@ for (int i=0; i< kI/4; i++){
               if (rank==0){
                 c[i][j] += a[i][k] * b[k][j];
               }else{
-                c_buffer[i*kJ+j] += a_buffer[i*kK+k]*b_buffer[k*kJ+j]
+                c_buffer[i*kJ+j] += a_buffer[i*kK+k]*b_buffer[k*kJ+j];
               }          
           }
         }
