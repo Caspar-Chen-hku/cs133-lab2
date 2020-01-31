@@ -53,7 +53,7 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
 
   MPI_Scatter(a, aCount, MPI_FLOAT, a_buffer, aCount, MPI_FLOAT, 0, MPI_COMM_WORLD);
   clog << "scattered\n";
-  MPI_Bcast( (void*) b, bCount, MPI_FLOAT, 0, MPI_COMM_WORLD);
+  MPI_Bcast( b, bCount, MPI_FLOAT, 0, MPI_COMM_WORLD);
   clog << "broadcasted\n";
   MPI_Barrier(MPI_COMM_WORLD); 
 
