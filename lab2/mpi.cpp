@@ -5,6 +5,8 @@
 
 
 #include "../lab1/gemm.h"
+using std::clog;
+using std::endl;
 
 // Using declarations, if any...
 
@@ -38,13 +40,17 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   int bCount = kK*kJ;
   int cCount = kI*kJ/numproc;
 
+
+  clog << "numproc: " << numproc << endl;
   //MPI_Gather(c, cCount, MPI_FLOAT, c_buffer, cCount, MPI_FLOAT, kRoot, MPI_COMM_WORLD);
   float *a_buffer = (float*) std::aligned_alloc(32, aCount);
   //float *b_buffer = (float*) std::aligned_alloc(32, bCount);
   float *c_buffer = (float*) std::aligned_alloc(32, cCount);
 
   MPI_Scatter(a, aCount*numproc, MPI_FLOAT, a_buffer, aCount, MPI_FLOAT, 0, MPI_COMM_WORLD);
+  clog << "scattered\n"
   MPI_Bcast( (void*) b, bCount, MPI_FLOAT, 0, MPI_COMM_WORLD);
+  clog << "broadcasted\n";
 
   int BLOCK_SIZE_I = kI/8;
   int BLOCK_SIZE_J = kJ/4;
@@ -80,6 +86,10 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
         }
   }
 
+  clog << "calculated\n";
+
   MPI_Gather(c_buffer, cCount, MPI_FLOAT, c, cCount*numproc, MPI_FLOAT, 0, MPI_COMM_WORLD);
+
+  clog << "gathered\n";
 
 }
