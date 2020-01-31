@@ -18,6 +18,8 @@ int main(int argc, char** argv) {
   MPI_Init(&argc, &argv);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
+  clog << "\nrank: " << rank << "\n";
+
   if (rank == kRoot) {
     a = new float[kI][kK];
     b = new float[kK][kJ];
