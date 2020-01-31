@@ -19,7 +19,8 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
 
   #pragma omp parallel for schedule(static) num_threads(8)
   for (int i = 0; i < kI; ++i) {
-    std::memset(c[i], 0, sizeof(float) * kJ);
+    c[i] = aligned_alloc(32, kJ);
+    //std::memset(c[i], 0, sizeof(float) * kJ);
   }
 
     #pragma omp parallel for schedule(static) num_threads(8)
