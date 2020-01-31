@@ -35,9 +35,9 @@ int main(int argc, char** argv) {
     clog << "\nRun parallel GEMM with MPI\n";
   }
 
-    float (*a_buffer)[kK] = nullptr;
-    float (*b_buffer)[kJ] = nullptr;
-    float (*c_buffer)[kJ] = nullptr;
+    float **a_buffer = new float*[kI/4];
+    float **b_buffer = new float*[kK];
+    float **c_buffer = new float*[kI/4];
 
     for (int i=0; i<kI/4; i++){
       a_buffer[i] = std::aligned_alloc(32, kK);
