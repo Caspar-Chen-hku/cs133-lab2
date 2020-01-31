@@ -1,6 +1,7 @@
 // Header inclusions, if any...
 #include <omp.h>
 #include <cstring>
+#include <stdlib.h>
 
 #include "gemm.h"
 
