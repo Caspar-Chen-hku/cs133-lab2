@@ -35,8 +35,9 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
                          float c[kI][kJ]) {
   // Your code goes here...
 
-  int numproc;
+  int numproc, rank;
   MPI_Comm_size(MPI_COMM_WORLD, &numproc);
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
   int aCount = kI*kK/numproc;
   int bCount = kK*kJ;
@@ -46,14 +47,23 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   clog << "numproc: " << numproc << endl;
   //MPI_Gather(c, cCount, MPI_FLOAT, c_buffer, cCount, MPI_FLOAT, kRoot, MPI_COMM_WORLD);
   float *a_buffer = (float*) std::aligned_alloc(32, aCount*sizeof *a_buffer);
-  //float *b_buffer = (float*) std::aligned_alloc(32, bCount);
+  float *b_buffer = (float*) std::aligned_alloc(32, bCount*sizeof *b_buffer);
   float *c_buffer = (float*) std::aligned_alloc(32, cCount*sizeof *c_buffer);
 
   clog << "allocated\n";
 
   MPI_Scatter(a, aCount, MPI_FLOAT, a_buffer, aCount, MPI_FLOAT, 0, MPI_COMM_WORLD);
   clog << "scattered\n";
-  MPI_Bcast( reinterpret_cast<void*>(b), bCount, MPI_FLOAT, 0, MPI_COMM_WORLD);
+  if (rank == 0){
+    for (int i=0; i<numproc; i++){
+      MPI_Send(b, bCount, MPI_FLOAT, i, 1, MPI_COMM_WORLD);
+    }
+  }else{
+    MPI_Status status;
+    MPI_Recv(b_buffer, bCount, MPI_FLOAT, 0, 1, MPI_COMM,WORLD, &status);
+  }
+
+  //MPI_Bcast( reinterpret_cast<void*>(b), bCount, MPI_FLOAT, 0, MPI_COMM_WORLD);
   clog << "broadcasted\n";
   MPI_Barrier(MPI_COMM_WORLD); 
 
