@@ -139,8 +139,9 @@ for (int i=0; i< kI/4; i++){
   if (rank==0){
     std::memset(c[i], 0, sizeof(float) * kJ);
   }
-      index_b = 0;
+      index_b = i*kJ;
         for (int k=0; k< kK; k++){
+          index_c = i*kJ;
           for (int j=0; j< kJ; j++)
           {
               if (rank==0){
@@ -152,9 +153,7 @@ for (int i=0; i< kI/4; i++){
               index_b++;      
           }
           index_a++;
-          index_b += kJ;
         }
-        index_c += kJ;
         index_a += kK;
     }
 
