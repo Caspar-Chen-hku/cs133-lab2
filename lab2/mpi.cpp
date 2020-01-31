@@ -1,7 +1,8 @@
 // Header inclusions, if any...
 
 #include <mpi.h>
-#include <cstring>
+#include <stdlib.h>
+
 
 #include "../lab1/gemm.h"
 
