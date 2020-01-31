@@ -60,12 +60,12 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
     }
   }else{
     MPI_Status status;
-    MPI_Recv(b_buffer, bCount, MPI_FLOAT, 0, 1, MPI_COMM,WORLD, &status);
+    MPI_Recv(b_buffer, bCount, MPI_FLOAT, 0, 1, MPI_COMM_WORLD, &status);
   }
 
   //MPI_Bcast( reinterpret_cast<void*>(b), bCount, MPI_FLOAT, 0, MPI_COMM_WORLD);
-  clog << "broadcasted\n";
   MPI_Barrier(MPI_COMM_WORLD); 
+  clog << "broadcasted\n";
 
   int BLOCK_SIZE_I = kI/8;
   int BLOCK_SIZE_J = kJ/4;
