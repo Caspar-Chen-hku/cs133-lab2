@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
   MPI_Comm_size(MPI_COMM_WORLD, &numproc);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-  clog << "\nrank: " << rank << ", numproc: " << numproc << "\n";
+  //clog << "\nrank: " << rank << ", numproc: " << numproc << "\n";
 
   if (rank == kRoot) {
     a = new float[kI][kK];
@@ -32,6 +32,8 @@ int main(int argc, char** argv) {
     GemmBaseline(a, b, c_base);
 
     clog << "\nRun parallel GEMM with MPI\n";
+
+    
   }
 
   MPI_Barrier(MPI_COMM_WORLD);
