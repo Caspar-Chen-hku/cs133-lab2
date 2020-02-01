@@ -5,8 +5,6 @@
 #include <iostream>
 #include <cstring>
 
-
-
 #include "../lab1/gemm.h"
 using std::clog;
 using std::endl;
@@ -55,7 +53,7 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
     c_buffer = (float*) std::aligned_alloc(32, cCount*sizeof *c_buffer);
   }
 
-  clog << "allocated\n";
+  //clog << "allocated\n";
 
   //MPI_Scatter(a, aCount, MPI_FLOAT, a_buffer, aCount, MPI_FLOAT, 0, MPI_COMM_WORLD);
   //clog << "scattered\n";
@@ -84,8 +82,8 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
 
 
   //MPI_Bcast( reinterpret_cast<void*>(b), bCount, MPI_FLOAT, 0, MPI_COMM_WORLD);
-  MPI_Barrier(MPI_COMM_WORLD); 
-  clog << "broadcasted\n";
+  //MPI_Barrier(MPI_COMM_WORLD); 
+  //clog << "broadcasted\n";
 
   /*
   int BLOCK_SIZE_I = kI/8;
@@ -127,7 +125,36 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   }
 */
 
+  int BLOCK_SIZE_I = 64;
+  int BLOCK_SIZE_J = 1024;
+  int BLOCK_SIZE_K = 8;
 
+    for (int i=0; i< kI; i+=BLOCK_SIZE_I){
+        for (int k=0; k< kK; k+=BLOCK_SIZE_K){
+          for (int j=0; j< kJ; j+=BLOCK_SIZE_J){
+            for (int i0=i; i0<i+BLOCK_SIZE_I; i0++){
+              if (rank == 0){
+                std::memset(c[i0], 0, sizeof(float) * kJ);
+              }
+              for (int j0=j; j0<j+BLOCK_SIZE_J; j0++){
+                float temp = c[i0][j0];
+                for (int k0=k; k0<k+BLOCK_SIZE_K; k0++){
+                  //c[i0][j0] += a[i0][k0] * b[k0][j0];
+                  if (rank == 0){
+                    temp += a[i0][k0] * b[k0][j0];
+                  }else{
+                    temp += a_buffer[i0*kK+k0] * b_buffer[k*kJ+j]
+                  }
+                  
+                }
+                c_buffer[i0*kJ+j0] = temp;
+              }
+            }
+          }
+        }
+  }
+
+/*
 for (int i=0; i< kI/4; i++){
   if (rank==0){
     std::memset(c[i], 0, sizeof(float) * kJ);
@@ -143,7 +170,7 @@ for (int i=0; i< kI/4; i++){
           }
         }
     }
-
+*/
   clog << "calculated\n";
 
   if (rank != 0){
