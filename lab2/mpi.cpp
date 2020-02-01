@@ -44,11 +44,11 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   float *b_buffer;
   float *c_buffer;
 
-  if (rank != 0){
+  //if (rank != 0){
     a_buffer = (float*) std::aligned_alloc(64, aCount*sizeof *a_buffer);
     b_buffer = (float*) std::aligned_alloc(64, bCount*sizeof *b_buffer);
     c_buffer = (float*) std::aligned_alloc(64, cCount*sizeof *c_buffer);
-  }
+  //}
 
   //clog << "allocated\n";
 
