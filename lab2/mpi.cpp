@@ -3,8 +3,10 @@
 #include <mpi.h>
 #include <stdlib.h>
 #include <cstring>
+#include <iostream>
 
 #include "../lab1/gemm.h"
+using std::clog;
 
 // Using declarations, if any...
 
@@ -77,7 +79,6 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
     MPI_Recv(b_buffer, bCount, MPI_FLOAT, 0, 2, MPI_COMM_WORLD, &status);
   }
 */
-
   for (int i=1; i<numproc; i++){
     MPI_Sendrecv(&a[offset][0], aCount, MPI_FLOAT, i, 1, a_buffer, aCount, MPI_FLOAT, 0, 1, MPI_COMM_WORLD, &status);
     MPI_Sendrecv(b, bCount, MPI_FLOAT, i, 2, b_buffer, bCount, MPI_FLOAT, 0, 2, MPI_COMM_WORLD, &status);
@@ -87,7 +88,7 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
 
   //MPI_Bcast( reinterpret_cast<void*>(b), bCount, MPI_FLOAT, 0, MPI_COMM_WORLD);
   //MPI_Barrier(MPI_COMM_WORLD); 
-  //clog << "broadcasted\n";
+  clog << "broadcasted\n";
 
   /*
   int BLOCK_SIZE_I = kI/8;
@@ -185,6 +186,8 @@ for (int i=0; i< kI/4; i++){
         }
     }
 
+  clog << "calculated\n";
+
 
   /*
   if (rank != 0){
@@ -205,6 +208,8 @@ for (int i=0; i< kI/4; i++){
     MPI_Sendrecv(c_buffer, cCount, MPI_FLOAT, 0, 1, &c[offset][0], cCount, MPI_FLOAT, i, 1, MPI_COMM_WORLD, &status);
     offset += rows;
   }
+
+  clog << "gathered\n";
 
   //MPI_Gather(c_buffer, cCount, MPI_FLOAT, c, cCount, MPI_FLOAT, 0, MPI_COMM_WORLD);
 
