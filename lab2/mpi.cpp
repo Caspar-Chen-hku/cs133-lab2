@@ -147,7 +147,12 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
                   }
                   
                 }
-                c_buffer[i0*kJ+j0] = temp;
+                if (rank==0){
+                  c[i0][j0] = temp;
+                }else{
+                  c_buffer[i0*kJ+j0] = temp;
+                }
+                
               }
             }
           }
