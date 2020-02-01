@@ -2,12 +2,9 @@
 
 #include <mpi.h>
 #include <stdlib.h>
-#include <iostream>
 #include <cstring>
 
 #include "../lab1/gemm.h"
-using std::clog;
-using std::endl;
 
 // Using declarations, if any...
 
@@ -48,9 +45,9 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   float *c_buffer;
 
   if (rank != 0){
-    a_buffer = (float*) std::aligned_alloc(32, aCount*sizeof *a_buffer);
-    b_buffer = (float*) std::aligned_alloc(32, bCount*sizeof *b_buffer);
-    c_buffer = (float*) std::aligned_alloc(32, cCount*sizeof *c_buffer);
+    a_buffer = (float*) std::aligned_alloc(64, aCount*sizeof *a_buffer);
+    b_buffer = (float*) std::aligned_alloc(64, bCount*sizeof *b_buffer);
+    c_buffer = (float*) std::aligned_alloc(64, cCount*sizeof *c_buffer);
   }
 
   //clog << "allocated\n";
@@ -124,7 +121,7 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
         }
   }
 */
-
+/*
   int BLOCK_SIZE_I = 64;
   int BLOCK_SIZE_J = 1024;
   int BLOCK_SIZE_K = 8;
@@ -163,8 +160,8 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
           }
         }
   }
+*/
 
-/*
 for (int i=0; i< kI/4; i++){
   if (rank==0){
     std::memset(c[i], 0, sizeof(float) * kJ);
@@ -180,8 +177,7 @@ for (int i=0; i< kI/4; i++){
           }
         }
     }
-*/
-  clog << "calculated\n";
+
 
   if (rank != 0){
     MPI_Send(c_buffer, cCount, MPI_FLOAT, 0, 1,
@@ -196,7 +192,5 @@ for (int i=0; i< kI/4; i++){
   }
 
   //MPI_Gather(c_buffer, cCount, MPI_FLOAT, c, cCount, MPI_FLOAT, 0, MPI_COMM_WORLD);
-
-  clog << "gathered\n";
 
 }
