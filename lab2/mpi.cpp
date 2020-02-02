@@ -27,26 +27,12 @@ allcate using aligned_alloc
 */
 
 void multiply0(const float a[kI][kK], const float b[kK][kJ], float c[kI][kJ], int numproc){
-  /*
-  int BLOCK_SIZE_I = 64;
-  int BLOCK_SIZE_J = 1024;
-  int BLOCK_SIZE_K = 8;
-  */
-  int BLOCK_SIZE_I = kI/8;
-  int BLOCK_SIZE_J = kJ/4;
-  int BLOCK_SIZE_K = kK/64;
-      for (int i=0; i< kI/numproc; i+=BLOCK_SIZE_I){
-        for (int k=0; k< kK; k+=BLOCK_SIZE_K){
-          for (int j=0; j< kJ; j+=BLOCK_SIZE_J){
-            for (int i0=i; i0<i+BLOCK_SIZE_I; i0++){
-              for (int k0=k; k0<k+BLOCK_SIZE_K; k0++){
-                for (int j0=j; j0<j+BLOCK_SIZE_J; j0++){
-                    c[i0][j0] += a[i0][k0] * b[k0][j0];
-                }
-              }
-            }
-          }
-        }
+  for (int i=0; i< kI/numproc; i+=BLOCK_SIZE_I){
+    for (int k=0; k< kK; k+=BLOCK_SIZE_K){
+      for (int j=0; j< kJ; j+=BLOCK_SIZE_J){
+        c[i][j] += a[i][k] * b[k][j];
+      }
+    }
   }
 }
 
