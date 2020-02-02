@@ -27,9 +27,14 @@ allcate using aligned_alloc
 */
 
 void multiply0(const float a[kI][kK], const float b[kK][kJ], float c[kI][kJ], int numproc){
+  /*
   int BLOCK_SIZE_I = 64;
   int BLOCK_SIZE_J = 1024;
   int BLOCK_SIZE_K = 8;
+  */
+  int BLOCK_SIZE_I = kI/8;
+  int BLOCK_SIZE_J = kJ/4;
+  int BLOCK_SIZE_K = kK/64;
       for (int i=0; i< kI/numproc; i+=BLOCK_SIZE_I){
         for (int k=0; k< kK; k+=BLOCK_SIZE_K){
           for (int j=0; j< kJ; j+=BLOCK_SIZE_J){
@@ -158,12 +163,6 @@ proc4: 10 01    11 11
   */
 
 /*
- if (rank != 0){
-   std:memset(c_buffer, 0, sizeof(float) * cCount);
- }
- */
-
-/*
     for (int i=0; i< kI/numproc; i+=BLOCK_SIZE_I){
         for (int k=0; k< kK; k+=BLOCK_SIZE_K){
           for (int j=0; j< kJ; j+=BLOCK_SIZE_J){
@@ -185,69 +184,9 @@ proc4: 10 01    11 11
         }
   }
 */
-/*
-  int BLOCK_SIZE_I = 64;
-  int BLOCK_SIZE_J = 1024;
-  int BLOCK_SIZE_K = 8;
 
-    for (int i=0; i< kI/numproc; i+=BLOCK_SIZE_I){
-        for (int k=0; k< kK; k+=BLOCK_SIZE_K){
-          for (int j=0; j< kJ; j+=BLOCK_SIZE_J){
-            for (int i0=i; i0<i+BLOCK_SIZE_I; i0++){
-              if (rank == 0){
-                std::memset(c[i0], 0, sizeof(float) * kJ);
-              }
-              for (int j0=j; j0<j+BLOCK_SIZE_J; j0++){
-                float temp;
-                if (rank ==0){
-                  temp = c[i0][j0];
-                }else{
-                  temp = c_buffer[i0*kJ+j0];
-                }
-                for (int k0=k; k0<k+BLOCK_SIZE_K; k0++){
-                  //c[i0][j0] += a[i0][k0] * b[k0][j0];
-                  if (rank == 0){
-                    temp += a[i0][k0] * b[k0][j0];
-                  }else{
-                    temp += a_buffer[i0*kK+k0] * b_buffer[k0*kJ+j0];
-                  }
-                  
-                }
-                if (rank==0){
-                  c[i0][j0] = temp;
-                }else{
-                  c_buffer[i0*kJ+j0] = temp;
-                }
-                
-              }
-            }
-          }
-        }
-  }
-*/
-
-/*
-  index_a = 0;
-  for (int i=0; i< kI/numproc; i++){
-        for (int k=0; k< kK; k++){
-          index_b = k*kJ;
-          index_c = i*kJ;
-          for (int j=0; j< kJ; j++)
-          {
-              if (rank==0){
-                c[i][j] += a[i][k] * b[k][j];
-              }else{
-                c_buffer[index_c] += a_buffer[index_a]*b_buffer[index_b];
-              }
-              index_b++;
-              index_c++;
-          }
-          index_a++;
-        }
-    }
-  */
  if (rank == 0){
-     multiply0(a,b,c,numproc);
+    multiply0(a,b,c,numproc);
  }else{
    multiply(a_buffer, b_buffer, c_buffer, numproc);
  }
