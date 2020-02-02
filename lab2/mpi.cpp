@@ -79,6 +79,7 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
     MPI_Recv(b_buffer, bCount, MPI_FLOAT, 0, 2, MPI_COMM_WORLD, &status);
   }
 
+  /*
   if (rank == 0) {
     for (int i=0; i<kI/numproc; i++){
       for (int j=0; j<kK; j++){
@@ -86,6 +87,7 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
       }
     }
   }
+  */
 
 /*
   for (int i=1; i<numproc; i++){
