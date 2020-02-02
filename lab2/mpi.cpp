@@ -79,6 +79,14 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
     MPI_Recv(b_buffer, bCount, MPI_FLOAT, 0, 2, MPI_COMM_WORLD, &status);
   }
 
+  if (rank == 0) {
+    for (int i=0; i<kI/numproc; i++){
+      for (int j=0; j<kK; j++){
+        a_buffer[i*kK+j] = a[i][j];
+      }
+    }
+  }
+
 /*
   for (int i=1; i<numproc; i++){
     MPI_Sendrecv(&a[offset][0], aCount, MPI_FLOAT, i, 1, a_buffer, aCount, MPI_FLOAT, 0, 1, MPI_COMM_WORLD, &status);
@@ -104,12 +112,12 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   int BLOCK_SIZE_K = 8;
   */
 
- if (rank != 0){
+ //if (rank != 0){
    std:memset(c_buffer, 0, sizeof(float) * cCount);
- }
+ //}
 
 /*
-    for (int i=0; i< kI/4; i+=BLOCK_SIZE_I){
+    for (int i=0; i< kI/numproc; i+=BLOCK_SIZE_I){
         for (int k=0; k< kK; k+=BLOCK_SIZE_K){
           for (int j=0; j< kJ; j+=BLOCK_SIZE_J){
             for (int i0=i; i0<i+BLOCK_SIZE_I; i0++){
@@ -135,7 +143,7 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   int BLOCK_SIZE_J = 1024;
   int BLOCK_SIZE_K = 8;
 
-    for (int i=0; i< kI/4; i+=BLOCK_SIZE_I){
+    for (int i=0; i< kI/numproc; i+=BLOCK_SIZE_I){
         for (int k=0; k< kK; k+=BLOCK_SIZE_K){
           for (int j=0; j< kJ; j+=BLOCK_SIZE_J){
             for (int i0=i; i0<i+BLOCK_SIZE_I; i0++){
@@ -171,18 +179,22 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   }
 */
 
-for (int i=0; i< kI/4; i++){
-  if (rank==0){
+for (int i=0; i< kI/numproc; i++){
+  /*if (rank==0){
     std::memset(c[i], 0, sizeof(float) * kJ);
   }
+  */
         for (int k=0; k< kK; k++){
           for (int j=0; j< kJ; j++)
           {
+            /*
               if (rank==0){
                 c[i][j] += a[i][k] * b[k][j];
               }else{
                 c_buffer[i*kJ+j] += a_buffer[i*kK+k]*b_buffer[k*kJ+j];
-              }   
+              }
+            */
+              c_buffer[i*kJ+j] += a_buffer[i*kK+k]*b_buffer[k*kJ+j];
           }
         }
     }
@@ -190,14 +202,21 @@ for (int i=0; i< kI/4; i++){
   //clog << "calculated\n";
 
   if (rank != 0){
-    MPI_Send(c_buffer, cCount, MPI_FLOAT, 0, 1,
-                   MPI_COMM_WORLD);
+    MPI_Send(c_buffer, cCount, MPI_FLOAT, 0, 1, MPI_COMM_WORLD);
   }
   if (rank == 0){
     offset = rows;
     for (int i=1; i<numproc; i++){
       MPI_Recv(&c[offset][0], cCount, MPI_FLOAT, i, 1, MPI_COMM_WORLD, &status);
       offset += rows;
+    }
+  }
+
+  if (rank == 0) {
+    for (int i=0; i<kI/numproc; i++){
+      for (int j=0; j<kJ; j++){
+        c[i][j] = c_buffer[i*kJ+j];
+      }
     }
   }
 
