@@ -201,6 +201,14 @@ for (int i=0; i< kI/numproc; i++){
 
   //clog << "calculated\n";
 
+    if (rank == 0) {
+    for (int i=0; i<kI/numproc; i++){
+      for (int j=0; j<kJ; j++){
+        c[i][j] = c_buffer[i*kJ+j];
+      }
+    }
+  }
+
   if (rank != 0){
     MPI_Send(c_buffer, cCount, MPI_FLOAT, 0, 1, MPI_COMM_WORLD);
   }
@@ -209,14 +217,6 @@ for (int i=0; i< kI/numproc; i++){
     for (int i=1; i<numproc; i++){
       MPI_Recv(&c[offset][0], cCount, MPI_FLOAT, i, 1, MPI_COMM_WORLD, &status);
       offset += rows;
-    }
-  }
-
-  if (rank == 0) {
-    for (int i=0; i<kI/numproc; i++){
-      for (int j=0; j<kJ; j++){
-        c[i][j] = c_buffer[i*kJ+j];
-      }
     }
   }
 
