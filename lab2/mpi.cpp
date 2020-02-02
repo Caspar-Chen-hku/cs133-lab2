@@ -193,7 +193,7 @@ for (int i=0; i< kI/numproc; i++){
               }else{
                 c_buffer[i*kJ+j] += a_buffer[i*kK+k]*b_buffer[k*kJ+j];
               }
-              c_buffer[i*kJ+j] += a_buffer[i*kK+k]*b_buffer[k*kJ+j];
+              //c_buffer[i*kJ+j] += a_buffer[i*kK+k]*b_buffer[k*kJ+j];
           }
         }
     }
@@ -211,8 +211,7 @@ for (int i=0; i< kI/numproc; i++){
 
   if (rank != 0){
     MPI_Send(c_buffer, cCount, MPI_FLOAT, 0, 1, MPI_COMM_WORLD);
-  }
-  if (rank == 0){
+  }else{
     offset = rows;
     for (int i=1; i<numproc; i++){
       MPI_Recv(&c[offset][0], cCount, MPI_FLOAT, i, 1, MPI_COMM_WORLD, &status);
