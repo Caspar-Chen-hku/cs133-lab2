@@ -70,14 +70,17 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   int cCount = kI*kJ/numproc;
   */
 
+  int half_size = kI/2;
+  int count = half_size*half_size;
+
   float *a_buffer;
   float *b_buffer;
   float *c_buffer;
 
   if (rank != 0){
-    a_buffer = (float*) std::aligned_alloc(64, aCount*sizeof *a_buffer);
-    b_buffer = (float*) std::aligned_alloc(64, bCount*sizeof *b_buffer);
-    c_buffer = (float*) std::aligned_alloc(64, cCount*sizeof *c_buffer);
+    a_buffer = (float*) std::aligned_alloc(64, count*sizeof *a_buffer);
+    b_buffer = (float*) std::aligned_alloc(64, count*sizeof *b_buffer);
+    c_buffer = (float*) std::aligned_alloc(64, count*sizeof *c_buffer);
   }
 
   int rows = kI/numproc;
@@ -105,7 +108,7 @@ proc2: 01 11    00 01
 proc3: 11 10    10 00
 proc4: 10 01    11 11
 */
- int half_size = kI/2;
+ 
  if (rank == 0) {
    for (int i=0; i<half_size; i++){
      MPI_Send(&a[i][half_size], half_size, MPI_FLOAT, 1, i,
