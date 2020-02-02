@@ -27,9 +27,9 @@ allcate using aligned_alloc
 */
 
 void multiply0(const float a[kI][kK], const float b[kK][kJ], float c[kI][kJ], int numproc){
-  for (int i=0; i< kI/numproc; i+=BLOCK_SIZE_I){
-    for (int k=0; k< kK; k+=BLOCK_SIZE_K){
-      for (int j=0; j< kJ; j+=BLOCK_SIZE_J){
+  for (int i=0; i< kI/numproc; i++){
+    for (int k=0; k< kK; k++){
+      for (int j=0; j< kJ; j++){
         c[i][j] += a[i][k] * b[k][j];
       }
     }
