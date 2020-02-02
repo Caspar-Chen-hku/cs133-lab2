@@ -25,7 +25,7 @@ use lab1 code
 scatter/gather from node 0
 allcate using aligned_alloc
 */
-
+/*
 void multiply0(const float a[kI][kK], const float b[kK][kJ], float c[kI][kJ], int numproc){
   for (int i=0; i< kI/numproc; i++){
     for (int k=0; k< kK; k++){
@@ -52,6 +52,7 @@ void multiply(float* a_buffer, float* b_buffer, float* &c_buffer, int numproc){
       }
     }
 }
+*/
 
 void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
                          float c[kI][kJ]) {
@@ -171,11 +172,24 @@ proc4: 10 01    11 11
   }
 */
 
- if (rank == 0){
-    multiply0(a,b,c,numproc);
- }else{
-   multiply(a_buffer, b_buffer, c_buffer, numproc);
- }
+ int index_a=0, index_b, index_c;
+  for (int i=0; i< kI/numproc; i++){
+      for (int k=0; k< kK; k++){
+        index_b = k*kJ;
+        index_c = i*kJ;
+        for (int j=0; j< kJ; j++)
+        {
+            if (rank == 0){
+              c[i][j] += a[i][k] * b[k][j];
+            }else{
+              c_buffer[index_c] += a_buffer[index_a]*b_buffer[index_b];
+              index_b++;
+              index_c++;
+            }
+        }
+        index_a++;
+      }
+  }
 
 /*
 proc1: 00 00    01 10
