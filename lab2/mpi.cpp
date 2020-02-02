@@ -187,7 +187,7 @@ for (int i=0; i< kI/numproc; i++){
   if (rank==0){
     std::memset(c[i], 0, sizeof(float) * kJ);
   } 
-        index_a = i*kK;
+        //index_a = i*kK;
         for (int k=0; k< kK; k++){
           index_b = k*kJ;
           for (int j=0; j< kJ; j++)
