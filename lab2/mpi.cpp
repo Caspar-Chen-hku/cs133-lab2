@@ -105,8 +105,9 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   int BLOCK_SIZE_I = kI/8;
   int BLOCK_SIZE_J = kJ/4;
   int BLOCK_SIZE_K = kK/64;
-  int index_a, index_b, index_c;
   */
+  int index_a, index_b, index_c;
+
 
   /*
   int BLOCK_SIZE_I = 64;
@@ -184,17 +185,19 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
 for (int i=0; i< kI/numproc; i++){
   if (rank==0){
     std::memset(c[i], 0, sizeof(float) * kJ);
-  }
+  } 
+        index_a = i*kK;
         for (int k=0; k< kK; k++){
+          
           for (int j=0; j< kJ; j++)
           {
               if (rank==0){
                 c[i][j] += a[i][k] * b[k][j];
               }else{
-                c_buffer[i*kJ+j] += a_buffer[i*kK+k]*b_buffer[k*kJ+j];
+                c_buffer[i*kJ+j] += a_buffer[index_a]*b_buffer[k*kJ+j];
               }
-              //c_buffer[i*kJ+j] += a_buffer[i*kK+k]*b_buffer[k*kJ+j];
           }
+          index_a++;
         }
     }
 
@@ -227,7 +230,7 @@ for (int i=0; i< kI/numproc; i++){
   }
   */
 
-  clog << "gathered\n";
+  //clog << "gathered\n";
 
   //MPI_Gather(c_buffer, cCount, MPI_FLOAT, c, cCount, MPI_FLOAT, 0, MPI_COMM_WORLD);
 
