@@ -54,6 +54,7 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
                          float c[kI][kJ]) {
   // Your code goes here...
 
+  /*************** INITIALIZE *****************/
   int numproc, rank;
   MPI_Comm_size(MPI_COMM_WORLD, &numproc);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -81,7 +82,7 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   int offset = rows;
   MPI_Status status;
 
-
+  /**************SEND BLOCKS OF DATA*******************/
   if (rank == 0){
     for (int i=1; i<numproc; i++){
       MPI_Send(&a[offset][0], aCount, MPI_FLOAT, i, 1,
@@ -110,6 +111,7 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   }
   */
 
+/***********************CALCULATE*************************/
 /*
   for (int i=1; i<numproc; i++){
     MPI_Sendrecv(&a[offset][0], aCount, MPI_FLOAT, i, 1, a_buffer, aCount, MPI_FLOAT, 0, 1, MPI_COMM_WORLD, &status);
@@ -239,6 +241,7 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   }
   */
 
+  /********************GATHER DATA*****************************/
   if (rank != 0){
     MPI_Send(c_buffer, cCount, MPI_FLOAT, 0, 1, MPI_COMM_WORLD);
   }else{
