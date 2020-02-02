@@ -192,12 +192,13 @@ for (int i=0; i< kI/numproc; i++){
           index_b = k*kJ;
           for (int j=0; j< kJ; j++)
           {
+            index_b += j;
               if (rank==0){
                 c[i][j] += a[i][k] * b[k][j];
               }else{
                 c_buffer[i*kJ+j] += a_buffer[index_a]*b_buffer[index_b];
               }
-              index_b++;
+              index_b -= j;
           }
           index_a++;
         }
