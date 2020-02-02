@@ -3,10 +3,10 @@
 #include <mpi.h>
 #include <stdlib.h>
 #include <cstring>
-#include <iostream>
+//#include <iostream>
 
 #include "../lab1/gemm.h"
-using std::clog;
+//using std::clog;
 
 // Using declarations, if any...
 
