@@ -25,7 +25,7 @@ use lab1 code
 scatter/gather from node 0
 allcate using aligned_alloc
 */
-
+/*
 void multiply0(const float a[kI][kK], const float b[kK][kJ], float c[kI][kJ], int numproc){
   int BLOCK_SIZE_I = kI/8;
   int BLOCK_SIZE_K = kK/128;
@@ -72,7 +72,7 @@ void multiply(float* a_buffer, float* b_buffer, float* &c_buffer, int numproc){
       }
   }
 }
-
+*/
 
 void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
                          float c[kI][kJ]) {
@@ -220,11 +220,49 @@ MPI_Request request;
       }
   }
 */
+
+int BLOCK_SIZE_I = kI/8;
+  int BLOCK_SIZE_K = kK/128;
+  int BLOCK_SIZE_J = kJ/2;
+
 if (rank == 0) {
-  multiply0(a, b, c, numproc);
+  for (int i=0; i< kI/numproc; i+=BLOCK_SIZE_I){
+      for (int k=0; k< kK; k+=BLOCK_SIZE_K){
+        for (int j=0; j< kJ; j+=BLOCK_SIZE_J){
+      for (int i0=i; i0<i+BLOCK_SIZE_I; i0++){
+        for (int k0=k; k0<k+BLOCK_SIZE_K; k0++){
+          for (int j0=j; j0<j+BLOCK_SIZE_J; j0++){
+                    c[i0][j0] += a[i0][k0] * b[k0][j0];
+            }
+          }
+        }
+      }
+      }
+  }
 }else{
-  multiply(a_buffer, b_buffer, c_buffer, numproc);
+  int index_a, index_b, index_c;
+
+    for (int i=0; i< kI/numproc; i+=BLOCK_SIZE_I){
+      for (int k=0; k< kK; k+=BLOCK_SIZE_K){
+        for (int j=0; j< kJ; j+=BLOCK_SIZE_J){
+      for (int i0=i; i0<i+BLOCK_SIZE_I; i0++){
+        index_a = i0*kJ+k;
+        for (int k0=k; k0<k+BLOCK_SIZE_K; k0++){
+          index_b = k0*kJ+j;
+          index_c = i0*kJ+j;
+          for (int j0=j; j0<j+BLOCK_SIZE_J; j0++){
+                    c_buffer[index_c] += a_buffer[index_a] * b_buffer[index_b];
+                    index_b++;
+                    index_c++;
+            }
+            index_a++;
+          }
+        }
+      }
+      }
+  }
 }
+
 
 /*
  int index_a=0, index_b, index_c;
