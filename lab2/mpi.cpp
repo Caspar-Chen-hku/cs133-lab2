@@ -116,7 +116,7 @@ MPI_Request* requests = new MPI_Request[2*numproc];
     MPI_Irecv(b_buffer, bCount, MPI_FLOAT, 0, 2, MPI_COMM_WORLD, &requests[1]);
     MPI_Wait(&requests[0], &status);
     MPI_Wait(&requests[1], &status);
-  }s
+  }
 
  /*
  if (rank == 0) {
