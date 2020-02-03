@@ -201,8 +201,8 @@ MPI_Request request;
                 if (rank==0){
                   temp = c[i0][j0];
                 }else{
-                  index_c = i0*kJ+j0;
-                  temp = c_buffer[index_c];
+                  //index_c = i0*kJ+j0;
+                  temp = c_buffer[i0*kJ+j0];
                 }
                 for (int k0=k; k0<k+BLOCK_SIZE_K; k0++){
                   //c[i0][j0] += a[i0][k0] * b[k0][j0];
@@ -216,7 +216,7 @@ MPI_Request request;
                 if(rank==0){
                   c[i0][j0] = temp;
                 }else{
-                  c_buffer[index_c] = temp;
+                  c_buffer[i0*kJ+j0] = temp;
                 }
               }
             }
