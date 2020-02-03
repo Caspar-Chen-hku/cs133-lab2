@@ -102,13 +102,13 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   }
 */
 
-MPI_Request* requests = new MPI_Request[2*numproc];
+MPI_Request* requests = new MPI_Request[2*numproc-2];
 
   if (rank == 0){
     for (int i=1; i<numproc; i++){
       MPI_Isend(&a[offset][0], aCount, MPI_FLOAT, i, 1,
-                   MPI_COMM_WORLD, &requests[2*i]);
-      MPI_Isend(b, bCount, MPI_FLOAT, i, 2, MPI_COMM_WORLD, &requests[2*i+1]);
+                   MPI_COMM_WORLD, &requests[2*i-2]);
+      MPI_Isend(b, bCount, MPI_FLOAT, i, 2, MPI_COMM_WORLD, &requests[2*i-1]);
       offset += rows;
     }
   }else{
