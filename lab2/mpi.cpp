@@ -106,22 +106,22 @@ MPI_Request request;
   if (rank == 0){
     for (int i=1; i<numproc; i++){
       MPI_Isend(&a[offset][0], aCount, MPI_FLOAT, i, 1,
-                   MPI_COMM_WORLD, request);
+                   MPI_COMM_WORLD, &request);
       offset += rows;
     }
   }else{
-    MPI_Irecv(a_buffer, aCount, MPI_FLOAT, 0, 1, MPI_COMM_WORLD, request);
-    MPI_Wait(request, &status);
+    MPI_Irecv(a_buffer, aCount, MPI_FLOAT, 0, 1, MPI_COMM_WORLD, &request);
+    MPI_Wait(&request, &status);
   }
 
   if (rank == 0){
     for (int i=1; i<numproc; i++){
-      MPI_Isend(b, bCount, MPI_FLOAT, i, 2, MPI_COMM_WORLD, request);
+      MPI_Isend(b, bCount, MPI_FLOAT, i, 2, MPI_COMM_WORLD, &request);
       offset += rows;
     }
   }else{
-    MPI_Irecv(b_buffer, bCount, MPI_FLOAT, 0, 2, MPI_COMM_WORLD, request);
-    MPI_Wait(request, &status);
+    MPI_Irecv(b_buffer, bCount, MPI_FLOAT, 0, 2, MPI_COMM_WORLD, &request);
+    MPI_Wait(&request, &status);
   }
 
  /*
@@ -299,12 +299,12 @@ if (rank != 0){
 
 if (rank != 0){
   MPI_Isend(c_buffer, cCount, MPI_FLOAT, 0, 1,
-                   MPI_COMM_WORLD, request);
+                   MPI_COMM_WORLD, &request);
 }else{
   offset = rows;
   for (int i=1; i<numproc; i++){
     MPI_Irecv(&c[offset][0], cCount, MPI_FLOAT, i, 1,
-                   MPI_COMM_WORLD, request);
+                   MPI_COMM_WORLD, &request);
       offset += rows;
       MPI_Wait(&request, &status);
   }
