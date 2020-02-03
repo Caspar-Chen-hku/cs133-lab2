@@ -188,8 +188,8 @@ MPI_Request request;
 */
 
   int BLOCK_SIZE_I = kI/8;
-  int BLOCK_SIZE_K = kK/256;
-  int BLOCK_SIZE_J = kJ/2;
+  int BLOCK_SIZE_K = kK/128;
+  int BLOCK_SIZE_J = kJ/4;
 
     for (int i=0; i< kI/numproc; i+=BLOCK_SIZE_I){
       for (int k=0; k< kK; k+=BLOCK_SIZE_K){
