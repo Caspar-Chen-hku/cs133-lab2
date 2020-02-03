@@ -141,8 +141,8 @@ MPI_Request request;
 /***********************CALCULATE*************************/
   
 
-  int BLOCK_SIZE_I = 256;
-  int BLOCK_SIZE_K = 64;
+  int BLOCK_SIZE_I = 512;
+  int BLOCK_SIZE_K = 32;
   int BLOCK_SIZE_J = 1024;
   int index_a, index_b, index_c;
 
