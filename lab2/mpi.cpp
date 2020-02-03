@@ -90,9 +90,9 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
 
   if (rank == 0){
     for (int i=1; i<numproc; i++){
-      MPI_Send(&a[offset][0], aCount, MPI_FLOAT, i, 1,
+      MPI_BSend(&a[offset][0], aCount, MPI_FLOAT, i, 1,
                    MPI_COMM_WORLD);
-      MPI_Send(b, bCount, MPI_FLOAT, i, 2, MPI_COMM_WORLD);
+      MPI_BSend(b, bCount, MPI_FLOAT, i, 2, MPI_COMM_WORLD);
       offset += rows;
     }
   }else{
@@ -100,12 +100,6 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
     MPI_Recv(b_buffer, bCount, MPI_FLOAT, 0, 2, MPI_COMM_WORLD, &status);
   }
 
-/*
-proc1: 00 00    01 10
-proc2: 01 11    00 01
-proc3: 11 10    10 00
-proc4: 10 01    11 11
-*/
  /*
  if (rank == 0) {
    for (int i=0; i<half_size; i++){
@@ -247,7 +241,7 @@ if (rank == 0){
  }
 
 */
-  /********************GATHER DATA*****************************/
+
   /*
   if (rank != 0){
     for (int i=0; i<half_size; i++){
@@ -264,8 +258,10 @@ if (rank == 0){
   }
 */
 
+/********************GATHER DATA*****************************/
+
 if (rank != 0){
-  MPI_Send(c_buffer, cCount, MPI_FLOAT, 0, 1,
+  MPI_BSend(c_buffer, cCount, MPI_FLOAT, 0, 1,
                    MPI_COMM_WORLD);
 }else{
   offset = rows;
