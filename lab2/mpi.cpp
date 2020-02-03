@@ -84,10 +84,12 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   }
   */
 
+  float (*a_buffer)[kK];
+  float (*b_buffer)[kJ];
+
  if (rank != 0){
-    a = new float[kI/numproc][kK];
-    b = new float[kK][kJ];
-    c = new float[kI/numproc][kJ];
+    a_buffer = new float[kI/numproc][kK];
+    b_buffer = new float[kK][kJ];
  }
 
   int rows = kI/numproc;
@@ -105,8 +107,8 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
       offset += rows;
     }
   }else{
-    MPI_Recv(a, aCount, MPI_FLOAT, 0, 1, MPI_COMM_WORLD, &status);
-    MPI_Recv(b, bCount, MPI_FLOAT, 0, 2, MPI_COMM_WORLD, &status);
+    MPI_Recv(a_buffer, aCount, MPI_FLOAT, 0, 1, MPI_COMM_WORLD, &status);
+    MPI_Recv(b_buffer, bCount, MPI_FLOAT, 0, 2, MPI_COMM_WORLD, &status);
   }
 
 
@@ -207,11 +209,11 @@ MPI_Request request;
         for (int k0=k; k0<k+BLOCK_SIZE_K; k0++){
           for (int j0=j; j0<j+BLOCK_SIZE_J; j0++){
             
-                  //if (rank==0){
+                  if (rank==0){
                     c[i0][j0] += a[i0][k0] * b[k0][j0];
-                  //}else{
-                  //  c_buffer[i0*kJ+j0] += a_buffer[i0*kK+k0] * b_buffer[k0*kJ+j0];
-                  //}
+                  }else{
+                    c[i0][j0] += a_buffer[i0][k0] * b_buffer[k0][j0];
+                  }
             }
           }
         }
