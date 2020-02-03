@@ -25,34 +25,54 @@ use lab1 code
 scatter/gather from node 0
 allcate using aligned_alloc
 */
-/*
+
 void multiply0(const float a[kI][kK], const float b[kK][kJ], float c[kI][kJ], int numproc){
-  for (int i=0; i< kI/numproc; i++){
-    for (int k=0; k< kK; k++){
-      for (int j=0; j< kJ; j++){
-        c[i][j] += a[i][k] * b[k][j];
+  int BLOCK_SIZE_I = kI/8;
+  int BLOCK_SIZE_K = kK/128;
+  int BLOCK_SIZE_J = kJ/2;
+
+    for (int i=0; i< kI/numproc; i+=BLOCK_SIZE_I){
+      for (int k=0; k< kK; k+=BLOCK_SIZE_K){
+        for (int j=0; j< kJ; j+=BLOCK_SIZE_J){
+      for (int i0=i; i0<i+BLOCK_SIZE_I; i0++){
+        for (int k0=k; k0<k+BLOCK_SIZE_K; k0++){
+          for (int j0=j; j0<j+BLOCK_SIZE_J; j0++){
+                    c[i0][j0] += a[i0][k0] * b[k0][j0];
+            }
+          }
+        }
       }
-    }
+      }
   }
 }
 
 void multiply(float* a_buffer, float* b_buffer, float* &c_buffer, int numproc){
-    int index_a=0, index_b, index_c;
-  for (int i=0; i< kI/numproc; i++){
-      for (int k=0; k< kK; k++){
-        index_b = k*kJ;
-        index_c = i*kJ;
-        for (int j=0; j< kJ; j++)
-        {
-            c_buffer[index_c] += a_buffer[index_a]*b_buffer[index_b];
-            index_b++;
-            index_c++;
+      int BLOCK_SIZE_I = kI/8;
+  int BLOCK_SIZE_K = kK/128;
+  int BLOCK_SIZE_J = kJ/2;
+  int index_a, index_b, index_c;
+
+    for (int i=0; i< kI/numproc; i+=BLOCK_SIZE_I){
+      for (int k=0; k< kK; k+=BLOCK_SIZE_K){
+        for (int j=0; j< kJ; j+=BLOCK_SIZE_J){
+      for (int i0=i; i0<i+BLOCK_SIZE_I; i0++){
+        index_a = i0*kJ+k;
+        for (int k0=k; k0<k+BLOCK_SIZE_K; k0++){
+          index_b = k0*kJ+j;
+          index_c = i0*kJ+j;
+          for (int j0=j; j0<j+BLOCK_SIZE_J; j0++){
+                    c_buffer[index_c] += a_buffer[index_a] * b_buffer[index_b];
+                    index_b++;
+                    index_c++;
+            }
+            index_a++;
+          }
         }
-        index_a++;
       }
-    }
+      }
+  }
 }
-*/
+
 
 void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
                          float c[kI][kJ]) {
@@ -168,7 +188,7 @@ MPI_Request request;
 */
 /***********************CALCULATE*************************/
   
-
+/*
   int BLOCK_SIZE_I = kI/8;
   int BLOCK_SIZE_K = kK/128;
   int BLOCK_SIZE_J = kJ/2;
@@ -199,6 +219,12 @@ MPI_Request request;
       }
       }
   }
+*/
+if (rank == 0) {
+  multiply0(a, b, c, numproc);
+}else{
+  multiply(a_buffer, b_buffer, c_buffer, numproc);
+}
 
 /*
  int index_a=0, index_b, index_c;
