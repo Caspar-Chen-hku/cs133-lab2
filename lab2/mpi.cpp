@@ -98,9 +98,9 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   float *c_buffer;
   
   if (rank != 0){
-    a_buffer = (float*) std::aligned_alloc(32, aCount*sizeof *a_buffer);
-    b_buffer = (float*) std::aligned_alloc(32, bCount*sizeof *b_buffer);
-    c_buffer = (float*) std::aligned_alloc(32, cCount*sizeof *c_buffer);
+    a_buffer = (float*) std::aligned_alloc(64, aCount*sizeof *a_buffer);
+    b_buffer = (float*) std::aligned_alloc(64, bCount*sizeof *b_buffer);
+    c_buffer = (float*) std::aligned_alloc(64, cCount*sizeof *c_buffer);
   }
 
   int rows = kI/numproc;
