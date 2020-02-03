@@ -72,7 +72,7 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   int count = half_size*half_size;
   */
 
-  /*
+  
   float *a_buffer;
   float *b_buffer;
   float *c_buffer;
@@ -80,10 +80,11 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   if (rank != 0){
     a_buffer = (float*) std::aligned_alloc(64, aCount*sizeof *a_buffer);
     b_buffer = (float*) std::aligned_alloc(64, bCount*sizeof *b_buffer);
-    c_buffer = (float*) std::aligned_alloc(64, cCount*sizeof *c_buffer);
+    c = new float[kI/numproc][kJ];
   }
-  */
+  
 
+/*
   float (*a_buffer)[kK];
   float (*b_buffer)[kJ];
 
@@ -92,6 +93,7 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
     b_buffer = new float[kK][kJ];
     c = new float[kI/numproc][kJ];
  }
+*/
 
   int rows = kI/numproc;
   int offset = rows;
@@ -218,7 +220,7 @@ MPI_Request request;
                   if (rank==0){
                     c[i0][j0] += a[i0][k0] * b[k0][j0];
                   }else{
-                    c[i0][j0] += a_buffer[i0][k0] * b_buffer[k0][j0];
+                    c[i0][j0] += a_buffer[i0*kJ+k0] * b_buffer[k0*kJ+j0];
                   }
             }
           }
