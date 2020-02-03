@@ -187,7 +187,7 @@ MPI_Request request;
   }
 */
 
-  int BLOCK_SIZE_I = kI/8;
+  int BLOCK_SIZE_I = kI/16;
   int BLOCK_SIZE_K = kK/64;
   int BLOCK_SIZE_J = kJ/4;
 
