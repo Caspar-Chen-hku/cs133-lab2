@@ -108,7 +108,7 @@ MPI_Request* requests = new MPI_Request[2*numproc];
     for (int i=1; i<numproc; i++){
       MPI_Isend(&a[offset][0], aCount, MPI_FLOAT, i, 1,
                    MPI_COMM_WORLD, &requests[2*i]);
-      MPI_ISend(b, bCount, MPI_FLOAT, i, 2, MPI_COMM_WORLD, &requests[2*i+1]);
+      MPI_Isend(b, bCount, MPI_FLOAT, i, 2, MPI_COMM_WORLD, &requests[2*i+1]);
       offset += rows;
     }
   }else{
@@ -116,7 +116,7 @@ MPI_Request* requests = new MPI_Request[2*numproc];
     MPI_Irecv(b_buffer, bCount, MPI_FLOAT, 0, 2, MPI_COMM_WORLD, &requests[1]);
     MPI_Wait(&requests[0], &status);
     MPI_Wait(&requests[1], &status);
-  }
+  }s
 
  /*
  if (rank == 0) {
