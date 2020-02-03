@@ -25,54 +25,6 @@ use lab1 code
 scatter/gather from node 0
 allcate using aligned_alloc
 */
-/*
-void multiply0(const float a[kI][kK], const float b[kK][kJ], float c[kI][kJ], int numproc){
-  int BLOCK_SIZE_I = kI/8;
-  int BLOCK_SIZE_K = kK/128;
-  int BLOCK_SIZE_J = kJ/2;
-
-    for (int i=0; i< kI/numproc; i+=BLOCK_SIZE_I){
-      for (int k=0; k< kK; k+=BLOCK_SIZE_K){
-        for (int j=0; j< kJ; j+=BLOCK_SIZE_J){
-      for (int i0=i; i0<i+BLOCK_SIZE_I; i0++){
-        for (int k0=k; k0<k+BLOCK_SIZE_K; k0++){
-          for (int j0=j; j0<j+BLOCK_SIZE_J; j0++){
-                    c[i0][j0] += a[i0][k0] * b[k0][j0];
-            }
-          }
-        }
-      }
-      }
-  }
-}
-
-void multiply(float* a_buffer, float* b_buffer, float* &c_buffer, int numproc){
-      int BLOCK_SIZE_I = kI/8;
-  int BLOCK_SIZE_K = kK/128;
-  int BLOCK_SIZE_J = kJ/2;
-  int index_a, index_b, index_c;
-
-    for (int i=0; i< kI/numproc; i+=BLOCK_SIZE_I){
-      for (int k=0; k< kK; k+=BLOCK_SIZE_K){
-        for (int j=0; j< kJ; j+=BLOCK_SIZE_J){
-      for (int i0=i; i0<i+BLOCK_SIZE_I; i0++){
-        index_a = i0*kJ+k;
-        for (int k0=k; k0<k+BLOCK_SIZE_K; k0++){
-          index_b = k0*kJ+j;
-          index_c = i0*kJ+j;
-          for (int j0=j; j0<j+BLOCK_SIZE_J; j0++){
-                    c_buffer[index_c] += a_buffer[index_a] * b_buffer[index_b];
-                    index_b++;
-                    index_c++;
-            }
-            index_a++;
-          }
-        }
-      }
-      }
-  }
-}
-*/
 
 void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
                          float c[kI][kJ]) {
@@ -110,7 +62,7 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
 
   /**************SEND BLOCKS OF DATA*******************/
 
-
+/*
   if (rank == 0){
     for (int i=1; i<numproc; i++){
       MPI_Send(&a[offset][0], aCount, MPI_FLOAT, i, 1,
@@ -122,13 +74,13 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
     MPI_Recv(a_buffer, aCount, MPI_FLOAT, 0, 1, MPI_COMM_WORLD, &status);
     MPI_Recv(b_buffer, bCount, MPI_FLOAT, 0, 2, MPI_COMM_WORLD, &status);
   }
-
+*/
 /*
 MPI_Scatter(a, aCount, MPI_FLOAT, a_buffer,
     aCount, MPI_FLOAT, 0,  MPI_COMM_WORLD);
 */
 
-/*
+
 MPI_Request request;
   if (rank == 0){
     for (int i=1; i<numproc; i++){
@@ -150,7 +102,7 @@ MPI_Request request;
     MPI_Irecv(b_buffer, bCount, MPI_FLOAT, 0, 2, MPI_COMM_WORLD, &request);
     MPI_Wait(&request, &status);
   }
-*/
+
  /*
  if (rank == 0) {
    for (int i=0; i<half_size; i++){
@@ -287,7 +239,7 @@ if (rank == 0){
 
 /********************GATHER DATA*****************************/
 
-
+/*
 if (rank != 0){
   MPI_Send(c_buffer, cCount, MPI_FLOAT, 0, 1,
                    MPI_COMM_WORLD);
@@ -299,12 +251,13 @@ if (rank != 0){
       offset += rows;
   }
 }
+*/
 
 /*
 MPI_Gather(c, cCount, MPI_FLOAT, c, cCount, MPI_FLOAT,
   0, MPI_COMM_WORLD);
 */
-/*
+
 MPI_Request request;
 if (rank != 0){
   MPI_Isend(c_buffer, cCount, MPI_FLOAT, 0, 1,
@@ -318,6 +271,5 @@ if (rank != 0){
       MPI_Wait(&request, &status);
   }
 }
-*/
 
 }
