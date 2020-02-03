@@ -90,9 +90,9 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
 
   if (rank == 0){
     for (int i=1; i<numproc; i++){
-      MPI_BSend(&a[offset][0], aCount, MPI_FLOAT, i, 1,
+      MPI_Bsend(&a[offset][0], aCount, MPI_FLOAT, i, 1,
                    MPI_COMM_WORLD);
-      MPI_BSend(b, bCount, MPI_FLOAT, i, 2, MPI_COMM_WORLD);
+      MPI_Bsend(b, bCount, MPI_FLOAT, i, 2, MPI_COMM_WORLD);
       offset += rows;
     }
   }else{
@@ -261,7 +261,7 @@ if (rank == 0){
 /********************GATHER DATA*****************************/
 
 if (rank != 0){
-  MPI_BSend(c_buffer, cCount, MPI_FLOAT, 0, 1,
+  MPI_Bsend(c_buffer, cCount, MPI_FLOAT, 0, 1,
                    MPI_COMM_WORLD);
 }else{
   offset = rows;
