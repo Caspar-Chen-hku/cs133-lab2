@@ -284,7 +284,7 @@ if (rank == 0){
 */
 
 /********************GATHER DATA*****************************/
-
+/*
 if (rank != 0){
   MPI_Send(c_buffer, cCount, MPI_FLOAT, 0, 1,
                    MPI_COMM_WORLD);
@@ -296,8 +296,9 @@ if (rank != 0){
       offset += rows;
   }
 }
+*/
 
-/*
+MPI_Request request;
 if (rank != 0){
   MPI_Isend(c_buffer, cCount, MPI_FLOAT, 0, 1,
                    MPI_COMM_WORLD, &request);
@@ -310,5 +311,5 @@ if (rank != 0){
       MPI_Wait(&request, &status);
   }
 }
-*/
+
 }
