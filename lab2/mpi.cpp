@@ -190,9 +190,10 @@ MPI_Request request;
   int BLOCK_SIZE_I = kI/8;
   
     for (int i=0; i< kI/numproc; i+=BLOCK_SIZE_I){
+      for (int i0=i; i0<i+BLOCK_SIZE_I; i0++){
         for (int k=0; k< kK; k++){
           for (int j=0; j< kJ; j++){
-            for (int i0=i; i0<i+BLOCK_SIZE_I; i0++){
+            
                   if (rank==0){
                     c[i0][j] += a[i0][k] * b[k][j];
                   }else{
