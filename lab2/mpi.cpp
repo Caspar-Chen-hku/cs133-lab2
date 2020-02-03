@@ -189,7 +189,7 @@ MPI_Request request;
 /***********************CALCULATE*************************/
   
 
-  int BLOCK_SIZE_I = 256;
+  int BLOCK_SIZE_I = 128;
   int BLOCK_SIZE_K = 32;
   int BLOCK_SIZE_J = 2048;
   int index_a, index_b, index_c;
@@ -207,7 +207,6 @@ MPI_Request request;
                   if (rank==0){
                     c[i0][j0] += a[i0][k0] * b[k0][j0];
                   }else{
-                    //c_buffer[i0*kJ+j0] += a_buffer[i0*kJ+k0] * b_buffer[k0*kJ+j0];
                     c_buffer[index_c] += a_buffer[index_a] * b_buffer[index_b];
                     index_b++;
                     index_c++;
@@ -219,35 +218,6 @@ MPI_Request request;
       }
       }
   }
-
-
-
-/*
- int index_a=0, index_b, index_c;
-  for (int i=0; i< kI/numproc; i++){
-      for (int k=0; k< kK; k++){
-        index_b = k*kJ;
-        index_c = i*kJ;
-        for (int j=0; j< kJ; j++)
-        {
-            if (rank == 0){
-              c[i][j] += a[i][k] * b[k][j];
-            }else{
-              c_buffer[index_c] += a_buffer[index_a]*b_buffer[index_b];
-              index_b++;
-              index_c++;
-            }
-        }
-        index_a++;
-      }
-  }
-*/
-/*
-proc1: 00 00    01 10
-proc2: 01 11    00 01
-proc3: 11 10    10 00
-proc4: 10 01    11 11
-*/
 
 /*
  if (rank == 0) {
