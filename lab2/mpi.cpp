@@ -188,7 +188,7 @@ MPI_Request request;
                     c[i0][j0] += a[i0][k0] * b[k0][j0];
                   }else{
                     //c_buffer[i0*kJ+j0] += a_buffer[i0*kJ+k0] * b_buffer[k0*kJ+j0];
-                    c_buffer[i0*kJ+j0] += a_buffer[index_a] * b_buffer[index_b];
+                    c_buffer[index_c] += a_buffer[i0*kJ+k0] * b_buffer[index_b];
                     index_b++;
                     index_c++;
                   }
