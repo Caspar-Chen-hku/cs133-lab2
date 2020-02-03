@@ -162,20 +162,16 @@ MPI_Request request;
 */
 /***********************CALCULATE*************************/
 
-  /*
+  
   int BLOCK_SIZE_I = kI/8;
   int BLOCK_SIZE_J = kJ/4;
   int BLOCK_SIZE_K = kK/64;
-  */
+  
 
-/*
     for (int i=0; i< kI/numproc; i+=BLOCK_SIZE_I){
         for (int k=0; k< kK; k+=BLOCK_SIZE_K){
           for (int j=0; j< kJ; j+=BLOCK_SIZE_J){
             for (int i0=i; i0<i+BLOCK_SIZE_I; i0++){
-              if (rank == 0){
-                std::memset(c[i0], 0, sizeof(float) * kJ);
-              }
               for (int k0=k; k0<k+BLOCK_SIZE_K; k0++){
                 for (int j0=j; j0<j+BLOCK_SIZE_J; j0++){
                   if (rank==0){
@@ -189,8 +185,8 @@ MPI_Request request;
           }
         }
   }
-*/
 
+/*
  int index_a=0, index_b, index_c;
   for (int i=0; i< kI/numproc; i++){
       for (int k=0; k< kK; k++){
@@ -209,7 +205,7 @@ MPI_Request request;
         index_a++;
       }
   }
-
+*/
 /*
 proc1: 00 00    01 10
 proc2: 01 11    00 01
