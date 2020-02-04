@@ -140,39 +140,7 @@ MPI_Request request;
 */
 /***********************CALCULATE*************************/
 
-int BLOCK_SIZE_I = 64;
-  int BLOCK_SIZE_J = 1024;
-  int BLOCK_SIZE_K = 8;
-  float temp;
 
-    for (int i=0; i< kI; i++){
-          for (int j=0; j< kJ; j++){
-            /*
-                if (rank == 0){
-                  temp = c[i][j];
-                }else{
-                  temp = c_buffer[i*kJ+j];
-                }
-              */
-             temp = 0.0;  
-                for (int k=0; k<kK; k++){
-                  //c[i0][j0] += a[i0][k0] * b[k0][j0];
-                  if (rank == 0){
-                    temp += a[i][k] * b[k][j];
-                  }else{
-                    temp += a_buffer[i*kJ+k] * b_buffer[k*kJ+j];
-                  }
-                  
-                }
-                if (rank == 0){
-                  c[i][j] = temp;
-                }else{
-                  c_buffer[i*kJ+j] = temp;
-                }
-                
-          }
-  }
-/*
   int BLOCK_SIZE_I = 256;
   int BLOCK_SIZE_K = 32;
   int BLOCK_SIZE_J = kJ/2;
@@ -202,7 +170,7 @@ int BLOCK_SIZE_I = 64;
       }
       }
   }
-*/
+
 /*
  if (rank == 0) {
    for (int i=0; i<half_size; i++){
