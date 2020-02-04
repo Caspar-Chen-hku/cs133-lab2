@@ -147,12 +147,14 @@ int BLOCK_SIZE_I = 64;
 
     for (int i=0; i< kI; i++){
           for (int j=0; j< kJ; j++){
+            /*
                 if (rank == 0){
                   temp = c[i][j];
                 }else{
                   temp = c_buffer[i*kJ+j];
                 }
-                
+              */
+             temp = 0.0;  
                 for (int k=0; k<kK; k++){
                   //c[i0][j0] += a[i0][k0] * b[k0][j0];
                   if (rank == 0){
