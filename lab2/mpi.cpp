@@ -146,7 +146,6 @@ int BLOCK_SIZE_I = 64;
   float temp;
 
     for (int i=0; i< kI; i++){
-        for (int k=0; k< kK; k+=BLOCK_SIZE_K){
           for (int j=0; j< kJ; j++){
                 if (rank == 0){
                   temp = c[i][j];
@@ -154,12 +153,12 @@ int BLOCK_SIZE_I = 64;
                   temp = c_buffer[i*kJ+j];
                 }
                 
-                for (int k0=k; k0<k+BLOCK_SIZE_K; k0++){
+                for (int k=0; k<kK; k++){
                   //c[i0][j0] += a[i0][k0] * b[k0][j0];
                   if (rank == 0){
-                    temp += a[i][k0] * b[k0][j];
+                    temp += a[i][k] * b[k][j];
                   }else{
-                    temp += a_buffer[i*kJ+k0] * b_buffer[k0*kJ+j];
+                    temp += a_buffer[i*kJ+k] * b_buffer[k*kJ+j];
                   }
                   
                 }
@@ -170,7 +169,6 @@ int BLOCK_SIZE_I = 64;
                 }
                 
           }
-        }
   }
 /*
   int BLOCK_SIZE_I = 256;
