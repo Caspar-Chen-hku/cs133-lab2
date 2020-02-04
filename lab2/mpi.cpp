@@ -161,7 +161,7 @@ int BLOCK_SIZE_I = 64;
                   if (rank == 0){
                     temp += a[i0][k0] * b[k0][j0];
                   }else{
-                    temp += a_buffer[i0*kJ+k0] * b[k0*kJ+j0];
+                    temp += a_buffer[i0*kJ+k0] * b_buffer[k0*kJ+j0];
                   }
                   
                 }
