@@ -145,7 +145,7 @@ MPI_Request request;
 */
 /***********************CALCULATE*************************/
 
-/*
+
   int BLOCK_SIZE_I = 256;
   int BLOCK_SIZE_K = 32;
   int BLOCK_SIZE_J = kJ/2;
@@ -175,8 +175,8 @@ MPI_Request request;
       }
       }
   }
-*/
 
+/*
 for (int i=0; i< kI/numproc; i+=64){
         for (int k=0; k< kK; k+=8){
           alignas(2048) float a_temp[64][8];
@@ -215,7 +215,7 @@ for (int i=0; i< kI/numproc; i+=64){
           }
         }
   }
-
+*/
  // clog << "calculated\n";
 
 /*
