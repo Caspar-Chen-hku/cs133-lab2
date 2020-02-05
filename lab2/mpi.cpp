@@ -183,7 +183,7 @@ MPI_Request request;
           for (int j0=j; j0<j+BLOCK_SIZE_J; j0++){
             
                   if (rank==0){
-                    c[i0][j0] += a_buffer[index_a] * b_buffer[k0][j0];
+                    c[i0][j0] += a_buffer[index_a] * b_buffer[index_b];
                   }else{
                     c_buffer[index_c] += a_buffer[index_a] * b_buffer[index_b];
                     index_b++;
