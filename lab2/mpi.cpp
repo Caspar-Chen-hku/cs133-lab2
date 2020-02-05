@@ -56,12 +56,12 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   }else{
     MPI_Recv(b_buffer, bCount, MPI_FLOAT, 0, 2, MPI_COMM_WORLD, &status);
   }
-
+/*
 if (rank == 0){
   memcpy(b_buffer, b, sizeof(float)*bCount);
 }
 
-/*
+
 MPI_Scatter(a, aCount, MPI_FLOAT, a_buffer,
     aCount, MPI_FLOAT, 0,  MPI_COMM_WORLD);
 MPI_Bcast(b_buffer, bCount, MPI_FLOAT,
