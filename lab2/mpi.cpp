@@ -256,7 +256,7 @@ if (rank != 0){
 */
 
 
-MPI_Gather(c_buffer, cCount, MPI_FLOAT, c, cCount, MPI_FLOAT,
+MPI_Gather(c_buffer, cCount, MPI_FLOAT, &c[0][0], cCount, MPI_FLOAT,
   0, MPI_COMM_WORLD);
 
 clog << "gathered c\n";
