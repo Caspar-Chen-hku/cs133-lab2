@@ -36,7 +36,7 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   int count = half_size*half_size;
   */
 
-  
+  /*
   float *a_buffer;
   float *b_buffer;
   float *c_buffer;
@@ -46,6 +46,11 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
     b_buffer = (float*) std::aligned_alloc(64, bCount*sizeof *b_buffer);
     c_buffer = (float*) std::aligned_alloc(64, cCount*sizeof *c_buffer);
   }
+  */
+
+ float a_buffer[kI/numproc][kK];
+ float b_buffer[kK][kJ];
+ //float c_buffer[kI/numproc][kJ];
 
   int rows = kI/numproc;
   int offset = rows;
@@ -131,7 +136,7 @@ MPI_Request request;
 */
 /***********************CALCULATE*************************/
 
-
+/*
   int BLOCK_SIZE_I = 256;
   int BLOCK_SIZE_K = 32;
   int BLOCK_SIZE_J = kJ/2;
@@ -160,6 +165,41 @@ MPI_Request request;
         }
       }
       }
+  }
+*/
+
+for (int i=0; i< kI; i+=64){
+        for (int k=0; k< kK; k+=8){
+          alignas(2048) float a_temp[64][8];
+          for (int ii=i; ii<i+64; ii++){
+            for (int kk=k; kk<k+8; kk++){
+              if (rank == 0){
+                a_temp[ii-i][kk-k] = a[ii][kk];
+              }else{
+                a_temp[ii-i][kk-k] = a_buffer[ii][kk];
+              }
+              
+            }
+          }
+          
+          for (int j=0; j< kJ; j+=1024){
+            for (int i0=i; i0<i+64; i0++){
+              for (int j0=j; j0<j+1024; j0++){
+                float temp = 0.0; //c[i0][j0];
+                for (int k0=k; k0<k+8; k0++){
+                  //c[i0][j0] += a[i0][k0] * b[k0][j0];
+                  if (rank == 0){
+                    temp += a_temp[i0-i][k0-k] * b[k0][j0];
+                  }else
+                  {
+                    temp += a_temp[i0-i][k0-k] * b_buffer[k0][j0];
+                  }
+                }
+                c[i0][j0] += temp;
+              }
+            }
+          }
+        }
   }
 
 /*
@@ -232,7 +272,7 @@ if (rank == 0){
 
 
 if (rank != 0){
-  MPI_Send(c_buffer, cCount, MPI_FLOAT, 0, 1,
+  MPI_Send(c, cCount, MPI_FLOAT, 0, 1,
                    MPI_COMM_WORLD);
 }else{
   offset = rows;
