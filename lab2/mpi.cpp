@@ -64,6 +64,7 @@ MPI_Scatter(a, aCount, MPI_FLOAT, a_buffer,
     aCount, MPI_FLOAT, 0,  MPI_COMM_WORLD);
 MPI_Bcast(b_buffer, bCount, MPI_FLOAT,
   0, MPI_COMM_WORLD);
+
 /*
   MPI_Request request;
   if (rank == 0){
