@@ -166,7 +166,7 @@ MPI_Request request;
   //int BLOCK_SIZE_K = 8;
   //int BLOCK_SIZE_J = kJ/32;
   int BLOCK_SIZE_I = 8;
-  int BLOCK_SIZE_K = 4;
+  int BLOCK_SIZE_K = 16;
   int BLOCK_SIZE_J = 16;
   //int index_a, index_b, index_c;
 
