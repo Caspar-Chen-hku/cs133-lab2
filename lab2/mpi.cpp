@@ -176,7 +176,7 @@ MPI_Request request;
   }
 */
 
-for (int i=0; i< kI; i+=64){
+for (int i=0; i< kI/numproc; i+=64){
         for (int k=0; k< kK; k+=8){
           alignas(2048) float a_temp[64][8];
           for (int ii=i; ii<i+64; ii++){
