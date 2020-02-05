@@ -41,12 +41,13 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   float *b_buffer;
   float *c_buffer;
   
-  //if (rank != 0){
+  if (rank != 0){
     a_buffer = (float*) std::aligned_alloc(kK, aCount*sizeof *a_buffer);
     b_buffer = (float*) std::aligned_alloc(kJ, bCount*sizeof *b_buffer);
     c_buffer = (float*) std::aligned_alloc(kJ, cCount*sizeof *c_buffer);
-  //}
+  }
 
+/*
   if (rank == 0){
     for (int i=0; i<kI/numproc; i++){
       for (int k=0; k<kK; k++){
@@ -59,7 +60,7 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
       }
     }
   }
-  
+  */
 /*
  float (*a_buffer)[kK] = nullptr;
  float (*b_buffer)[kJ] = nullptr;
@@ -159,12 +160,12 @@ MPI_Request request;
 /***********************CALCULATE*************************/
 
 
-  //int BLOCK_SIZE_I = 256;
-  //int BLOCK_SIZE_K = 32;
-  //int BLOCK_SIZE_J = kJ/2;
-  int BLOCK_SIZE_I = 8;
-  int BLOCK_SIZE_K = 8;
-  int BLOCK_SIZE_J = 16;
+  int BLOCK_SIZE_I = 256;
+  int BLOCK_SIZE_K = 32;
+  int BLOCK_SIZE_J = kJ/2;
+  //int BLOCK_SIZE_I = 8;
+  //int BLOCK_SIZE_K = 8;
+  //int BLOCK_SIZE_J = 16;
   int index_a, index_b, index_c;
 
     for (int i=0; i< kI/numproc; i+=BLOCK_SIZE_I){
@@ -177,13 +178,13 @@ MPI_Request request;
           index_c = i0*kJ+j;
           for (int j0=j; j0<j+BLOCK_SIZE_J; j0++){
             
-                  //if (rank==0){
-                  //  c[i0][j0] += a[i0][k0] * b[k0][j0];
-                  //}else{
+                  if (rank==0){
+                    c[i0][j0] += a[i0][k0] * b[k0][j0];
+                  }else{
                     c_buffer[index_c] += a_buffer[index_a] * b_buffer[index_b];
                     index_b++;
                     index_c++;
-                  //}
+                  }
             }
             index_a++;
           }
@@ -301,6 +302,7 @@ if (rank == 0){
 */
 
 /********************GATHER DATA*****************************/
+/*
 if (rank == 0){
   for (int i=0; i<kI/numproc; i++){
     for (int j=0; j<kJ; j++){
@@ -308,7 +310,7 @@ if (rank == 0){
     }
   }
 }
-
+*/
 if (rank != 0){
   MPI_Send(c_buffer, cCount, MPI_FLOAT, 0, 1,
                    MPI_COMM_WORLD);
