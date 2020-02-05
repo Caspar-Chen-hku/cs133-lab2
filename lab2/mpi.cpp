@@ -158,13 +158,13 @@ MPI_Request request;
           index_c = i0*kJ+j;
           for (int j0=j; j0<j+BLOCK_SIZE_J; j0++){
             
-                  if (rank==0){
-                    c[i0][j0] += a[i0][k0] * b[k0][j0];
-                  }else{
+                  //if (rank==0){
+                  //  c[i0][j0] += a[i0][k0] * b[k0][j0];
+                  //}else{
                     c_buffer[index_c] += a_buffer[index_a] * b_buffer[index_b];
                     index_b++;
                     index_c++;
-                  }
+                  //}
             }
             index_a++;
           }
