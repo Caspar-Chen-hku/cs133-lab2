@@ -98,6 +98,11 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
 MPI_Scatter(a, aCount, MPI_FLOAT, a_buffer,
     aCount, MPI_FLOAT, 0,  MPI_COMM_WORLD);
 
+if (rank == 0){
+  memcpy(b_buffer, b, bCount*sizeof(float));
+}
+
+
 /*
 MPI_Request request;
   if (rank == 0){
@@ -178,7 +183,7 @@ MPI_Request request;
           for (int j0=j; j0<j+BLOCK_SIZE_J; j0++){
             
                   if (rank==0){
-                    c[i0][j0] += a_buffer[index_a] * b[k0][j0];
+                    c[i0][j0] += a_buffer[index_a] * b_buffer[k0][j0];
                   }else{
                     c_buffer[index_c] += a_buffer[index_a] * b_buffer[index_b];
                     index_b++;
