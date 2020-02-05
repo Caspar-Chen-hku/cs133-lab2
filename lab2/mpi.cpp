@@ -264,6 +264,7 @@ if (rank == 0){
 
 
 if (rank != 0){
+  memcpy(c, c_buffer, sizeof(float) * cCount);
   MPI_Send(c_buffer, cCount, MPI_FLOAT, 0, 1,
                    MPI_COMM_WORLD);
 }else{
