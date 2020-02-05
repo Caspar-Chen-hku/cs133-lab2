@@ -3,10 +3,10 @@
 #include <mpi.h>
 #include <stdlib.h>
 #include <cstring>
-#include <iostream>
+//#include <iostream>
 
 #include "../lab1/gemm.h"
-using std::clog;
+//using std::clog;
 
 // Using declarations, if any...
 
@@ -146,9 +146,9 @@ MPI_Request request;
 /***********************CALCULATE*************************/
 
 
-  int BLOCK_SIZE_I = 256;
-  int BLOCK_SIZE_K = 32;
-  int BLOCK_SIZE_J = kJ/2;
+  //int BLOCK_SIZE_I = 256;
+  //int BLOCK_SIZE_K = 32;
+  //int BLOCK_SIZE_J = kJ/2;
   int index_a, index_b, index_c;
 
     for (int i=0; i< kI/numproc; i+=256){
