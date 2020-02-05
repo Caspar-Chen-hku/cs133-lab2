@@ -39,32 +39,28 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   b_buffer = (float*) std::aligned_alloc(64, bCount*sizeof *b_buffer);
   c_buffer = (float*) std::aligned_alloc(64, cCount*sizeof *c_buffer);
   std::memset(c_buffer, 0, sizeof(float) * cCount);
-
+/*
   int rows = kI/numproc;
   int offset = rows;
-
+*/
   MPI_Status status;
 
   /**************SEND BLOCKS OF DATA*******************/
-/*
+
   if (rank == 0){
   memcpy(b_buffer, b, sizeof(float)*bCount);
     for (int i=1; i<numproc; i++){
-      MPI_Send(&a[offset][0], aCount, MPI_FLOAT, i, 1, MPI_COMM_WORLD);
       MPI_Send(b, bCount, MPI_FLOAT, i, 2, MPI_COMM_WORLD);
-      offset += rows;
     }
   }else{
-    MPI_Recv(a_buffer, aCount, MPI_FLOAT, 0, 1, MPI_COMM_WORLD, &status);   
     MPI_Recv(b_buffer, bCount, MPI_FLOAT, 0, 2, MPI_COMM_WORLD, &status);
   }
-*/
-/*
+
 MPI_Scatter(a, aCount, MPI_FLOAT, a_buffer,
     aCount, MPI_FLOAT, 0,  MPI_COMM_WORLD);
-*/
 
-MPI_Request request;
+/*
+  MPI_Request request;
   if (rank == 0){
     for (int i=1; i<numproc; i++){
       MPI_Isend(&a[offset][0], aCount, MPI_FLOAT, i, 1,
@@ -85,7 +81,7 @@ MPI_Request request;
     MPI_Irecv(b_buffer, bCount, MPI_FLOAT, 0, 2, MPI_COMM_WORLD, &request);
     MPI_Wait(&request, &status);
   }
-
+*/
 /***********************CALCULATE*************************/
 
   int BLOCK_SIZE_I = 16;
@@ -127,11 +123,11 @@ if (rank != 0){
 
 //clog << "gathered\n";
 
-//MPI_Gather(c_buffer, cCount, MPI_FLOAT, c, cCount, MPI_FLOAT,
-//  0, MPI_COMM_WORLD);
+MPI_Gather(c_buffer, cCount, MPI_FLOAT, c, cCount, MPI_FLOAT,
+  0, MPI_COMM_WORLD);
 
 
-
+/*
 if (rank != 0){
   MPI_Isend(c_buffer, cCount, MPI_FLOAT, 0, 1,
                    MPI_COMM_WORLD, &request);
@@ -145,6 +141,6 @@ if (rank != 0){
       MPI_Wait(&request, &status);
   }
 }
-
+*/
 
 }
