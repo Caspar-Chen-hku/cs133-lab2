@@ -43,8 +43,8 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   
   //if (rank != 0){
     a_buffer = (float*) std::aligned_alloc(64, aCount*sizeof *a_buffer);
-    b_buffer = (float*) std::aligned_alloc(128, bCount*sizeof *b_buffer);
-    c_buffer = (float*) std::aligned_alloc(128, cCount*sizeof *c_buffer);
+    b_buffer = (float*) std::aligned_alloc(64, bCount*sizeof *b_buffer);
+    c_buffer = (float*) std::aligned_alloc(64, cCount*sizeof *c_buffer);
     std::memset(c_buffer, 0, sizeof(float) * cCount);
   //}
 
@@ -166,7 +166,7 @@ MPI_Request request;
   //int BLOCK_SIZE_K = 8;
   //int BLOCK_SIZE_J = kJ/32;
   int BLOCK_SIZE_I = 8;
-  int BLOCK_SIZE_K = 8;
+  int BLOCK_SIZE_K = 4;
   int BLOCK_SIZE_J = 16;
   //int index_a, index_b, index_c;
 
