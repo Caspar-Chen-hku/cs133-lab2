@@ -179,12 +179,12 @@ MPI_Request request;
           index_c = i0*kJ+j;
           for (int j0=j; j0<j+BLOCK_SIZE_J; j0++){
             
-                  if (rank==0){
-                    c[i0][j0] += a_buffer[index_a] * b_buffer[index_b];
-                  }else{
+                  //if (rank==0){
+                  //  c[i0][j0] += a_buffer[index_a] * b_buffer[index_b];
+                  //}else{
                     c_buffer[index_c] += a_buffer[index_a] * b_buffer[index_b];
                     index_c++;
-                  }
+                  //}
                   index_b++;
             }
             index_a++;
@@ -312,6 +312,8 @@ if (rank == 0){
   }
 }
 */
+
+/*
 if (rank != 0){
   MPI_Send(c_buffer, cCount, MPI_FLOAT, 0, 1,
                    MPI_COMM_WORLD);
@@ -323,14 +325,14 @@ if (rank != 0){
       offset += rows;
   }
 }
+*/
+
 
 //clog << "gathered\n";
 
-
-/*
 MPI_Gather(c_buffer, cCount, MPI_FLOAT, c, cCount, MPI_FLOAT,
   0, MPI_COMM_WORLD);
-*/
+
 
 /*
 if (rank != 0){
