@@ -169,29 +169,37 @@ MPI_Request request;
   int BLOCK_SIZE_K = 8;
   int BLOCK_SIZE_J = 16;
   float temp;
+  float* a_temp = (float*) std::aligned_alloc(64, BLOCK_SIZE_I*BLOCK_SIZE_K*sizeof *a_buffer);;
   //int index_a, index_b, index_c;
 
     for (int i=0; i< kI/numproc; i+=BLOCK_SIZE_I){
       for (int k=0; k< kK; k+=BLOCK_SIZE_K){
+        
+          for (int ii=0; ii<BLOCK_SIZE_I; ii++){
+            for (int kk=0; kk<BLOCK_SIZE_K; kk++){
+              a_temp[ii*kK+kk] = a_buffer[(ii+i)*kK+kk+k];
+            }
+          }
+
         for (int j=0; j< kJ; j+=BLOCK_SIZE_J){
       for (int i0=i; i0<i+BLOCK_SIZE_I; i0++){
         //index_a = i0*kJ+k;
         for (int j0=j; j0<j+BLOCK_SIZE_J; j0++){
           //index_b = k0*kJ+j;
           //index_c = i0*kJ+j;
-          temp = c_buffer[i0*kJ+j0];
+          temp = 0;
           for (int k0=k; k0<k+BLOCK_SIZE_K; k0++){
             
                   //if (rank==0){
                   //  c[i0][j0] += a_buffer[index_a] * b_buffer[index_b];
                   //}else{
-                  temp += a_buffer[i0*kJ+k0] * b_buffer[k0*kJ+j0];;
+                  temp += a_temp[i0*kJ+k0] * b_buffer[k0*kJ+j0];;
                     //c_buffer[i0*kJ+j0] += a_buffer[i0*kJ+k0] * b_buffer[k0*kJ+j0];
                     //index_c++;
                   //}
                   //index_b++;
             }
-            c_buffer[i0*kJ+j0] = temp;
+            c_buffer[i0*kJ+j0] += temp;
             //index_a++;
           }
         }
