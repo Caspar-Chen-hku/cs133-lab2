@@ -35,9 +35,9 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
           for (int j=0; j< kJ; j+=BLOCK_SIZE_J){
             for (int i0=i; i0<i+BLOCK_SIZE_I; i0++){
               //std::memset(c[i0], 0, sizeof(float) * kJ);
-              for (int k0=k; k0<k+BLOCK_SIZE_K; k0++){
+              for (int j0=j; j0<j+BLOCK_SIZE_J; j0++){
                 float temp = c[i0][j0];
-                for (int j0=j; j0<j+BLOCK_SIZE_J; j0++){
+                for (int k0=k; k0<k+BLOCK_SIZE_K; k0++){
                   //c[i0][j0] += a[i0][k0] * b[k0][j0];
                   temp += a_buffer[i0-i][k0-k] * b[k0][j0];
                 }
