@@ -40,12 +40,12 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   c_buffer = (float*) std::aligned_alloc(64, cCount*sizeof *c_buffer);
   std::memset(c_buffer, 0, sizeof(float) * cCount);
 
-  int rows = kI/numproc;
-  int offset = rows;
-
   MPI_Status status;
 
   /**************SEND BLOCKS OF DATA*******************/
+/*
+  int rows = kI/numproc;
+  int offset = rows;
 
   if (rank == 0){
   memcpy(b_buffer, b, sizeof(float)*bCount);
@@ -58,6 +58,7 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
     MPI_Recv(a_buffer, aCount, MPI_FLOAT, 0, 1, MPI_COMM_WORLD, &status);
     MPI_Recv(b_buffer, bCount, MPI_FLOAT, 0, 2, MPI_COMM_WORLD, &status);
   }
+*/
 /*
 if (rank == 0){
   memcpy(b_buffer, b, sizeof(float)*bCount);
@@ -70,9 +71,13 @@ MPI_Bcast(b_buffer, bCount, MPI_FLOAT,
   0, MPI_COMM_WORLD);
 */
 
-/*
+
+  int rows = kI/numproc;
+  int offset = rows;
+
   MPI_Request request;
   if (rank == 0){
+    memcpy(a_buffer, a, sizeof(float)*aCount);
     for (int i=1; i<numproc; i++){
       MPI_Isend(&a[offset][0], aCount, MPI_FLOAT, i, 1,
                    MPI_COMM_WORLD, &request);
@@ -84,6 +89,7 @@ MPI_Bcast(b_buffer, bCount, MPI_FLOAT,
   }
 
   if (rank == 0){
+    memcpy(b_buffer, b, sizeof(float)*bCount);
     for (int i=1; i<numproc; i++){
       MPI_Isend(b, bCount, MPI_FLOAT, i, 2, MPI_COMM_WORLD, &request);
       offset += rows;
@@ -92,7 +98,7 @@ MPI_Bcast(b_buffer, bCount, MPI_FLOAT,
     MPI_Irecv(b_buffer, bCount, MPI_FLOAT, 0, 2, MPI_COMM_WORLD, &request);
     MPI_Wait(&request, &status);
   }
-*/
+
 /***********************CALCULATE*************************/
 
   int BLOCK_SIZE_I = 16;
@@ -117,7 +123,7 @@ MPI_Bcast(b_buffer, bCount, MPI_FLOAT,
   }
 
 /********************GATHER DATA*****************************/
-
+/*
 if (rank != 0){
   MPI_Send(c_buffer, cCount, MPI_FLOAT, 0, 1,
                    MPI_COMM_WORLD);
@@ -130,7 +136,7 @@ if (rank != 0){
       offset += rows;
   }
 }
-
+*/
 
 //clog << "gathered\n";
 
@@ -139,7 +145,7 @@ MPI_Gather(c_buffer, cCount, MPI_FLOAT, c, cCount, MPI_FLOAT,
   0, MPI_COMM_WORLD);
 */
 
-/*
+
 if (rank != 0){
   MPI_Isend(c_buffer, cCount, MPI_FLOAT, 0, 1,
                    MPI_COMM_WORLD, &request);
@@ -153,6 +159,6 @@ if (rank != 0){
       MPI_Wait(&request, &status);
   }
 }
-*/
+
 
 }
