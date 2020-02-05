@@ -46,7 +46,7 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   MPI_Status status;
 
   /**************SEND BLOCKS OF DATA*******************/
-
+/*
   if (rank == 0){
   memcpy(b_buffer, b, sizeof(float)*bCount);
     for (int i=1; i<numproc; i++){
@@ -58,11 +58,12 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
     MPI_Recv(a_buffer, aCount, MPI_FLOAT, 0, 1, MPI_COMM_WORLD, &status);   
     MPI_Recv(b_buffer, bCount, MPI_FLOAT, 0, 2, MPI_COMM_WORLD, &status);
   }
+*/
 /*
 MPI_Scatter(a, aCount, MPI_FLOAT, a_buffer,
     aCount, MPI_FLOAT, 0,  MPI_COMM_WORLD);
 */
-/*
+
 MPI_Request request;
   if (rank == 0){
     for (int i=1; i<numproc; i++){
@@ -84,42 +85,7 @@ MPI_Request request;
     MPI_Irecv(b_buffer, bCount, MPI_FLOAT, 0, 2, MPI_COMM_WORLD, &request);
     MPI_Wait(&request, &status);
   }
-*/
- /*
- if (rank == 0) {
-   for (int i=0; i<half_size; i++){
-     MPI_Send(&a[i][half_size], half_size, MPI_FLOAT, 1, i,
-                   MPI_COMM_WORLD);
-   }
-   for (int i=half_size; i<kI; i++){
-     MPI_Send(&a[i][0], half_size, MPI_FLOAT, 3, i-half_size,
-                   MPI_COMM_WORLD);
-    MPI_Send(&a[i][half_size], half_size, MPI_FLOAT, 2, i-half_size,
-                   MPI_COMM_WORLD);
-   }
- }else{
-   for (int i=0; i<half_size; i++){
-     MPI_Recv(&a_buffer[i*half_size], half_size, MPI_FLOAT, 0, i, MPI_COMM_WORLD, &status);
-   }
- }
 
-  if (rank == 0) {
-   for (int i=0; i<half_size; i++){
-     MPI_Send(&b[i][half_size], half_size, MPI_FLOAT, 3, i,
-                   MPI_COMM_WORLD);
-   }
-   for (int i=half_size; i<kI; i++){
-     MPI_Send(&b[i][0], half_size, MPI_FLOAT, 2, i-half_size,
-                   MPI_COMM_WORLD);
-    MPI_Send(&b[i][half_size], half_size, MPI_FLOAT, 1, i-half_size,
-                   MPI_COMM_WORLD);
-   }
- }else{
-   for (int i=0; i<half_size; i++){
-     MPI_Recv(&b_buffer[i*half_size], half_size, MPI_FLOAT, 0, i, MPI_COMM_WORLD, &status);
-   }
- }
-*/
 /***********************CALCULATE*************************/
 
   int BLOCK_SIZE_I = 16;
@@ -143,131 +109,12 @@ MPI_Request request;
       }
   }
 
-/*
-for (int i=0; i< kI/numproc; i+=64){
-        for (int k=0; k< kK; k+=8){
-          alignas(2048) float a_temp[64][8];
-          for (int ii=i; ii<i+64; ii++){
-            for (int kk=k; kk<k+8; kk++){
-              if (rank == 0){
-                a_temp[ii-i][kk-k] = a[ii][kk];
-              }else{
-                a_temp[ii-i][kk-k] = a_buffer[ii*kK+kk];
-              }
-              
-            }
-          }
-          
-          for (int j=0; j< kJ; j+=1024){
-            for (int i0=i; i0<i+64; i0++){
-              for (int j0=j; j0<j+1024; j0++){
-                float temp = 0.0; //c[i0][j0];
-                for (int k0=k; k0<k+8; k0++){
-                  //c[i0][j0] += a[i0][k0] * b[k0][j0];
-                  if (rank == 0){
-                    temp += a_temp[i0-i][k0-k] * b[k0][j0];
-                  }else
-                  {
-                    temp += a_temp[i0-i][k0-k] * b_buffer[k0*kJ+j0];
-                  }
-                }
-                if (rank == 0){
-                  c[i0][j0] += temp;
-                }else{
-                  c_buffer[i0*kJ+j0] += temp;
-                }
-                
-              }
-            }
-          }
-        }
-  }
-*/
- // clog << "calculated\n";
-
-/*
- if (rank == 0) {
-   for (int i=0; i<half_size; i++){
-     MPI_Send(&a[i][0], half_size, MPI_FLOAT, 1, i,
-                   MPI_COMM_WORLD);
-   }
-   for (int i=half_size; i<kI; i++){
-     MPI_Send(&a[i][0], half_size, MPI_FLOAT, 2, i-half_size,
-                   MPI_COMM_WORLD);
-    MPI_Send(&a[i][half_size], half_size, MPI_FLOAT, 3, i-half_size,
-                   MPI_COMM_WORLD);
-   }
- }else{
-   for (int i=0; i<half_size; i++){
-     MPI_Recv(&a_buffer[i*half_size], half_size, MPI_FLOAT, 0, i, MPI_COMM_WORLD, &status);
-   }
- }
-
-  if (rank == 0) {
-   for (int i=0; i<half_size; i++){
-     MPI_Send(&b[i][0], half_size, MPI_FLOAT, 2, i,
-                   MPI_COMM_WORLD);
-    MPI_Send(&b[i][half_size], half_size, MPI_FLOAT, 1, i,
-                   MPI_COMM_WORLD);
-   }
-   for (int i=half_size; i<kI; i++){
-    MPI_Send(&b[i][half_size], half_size, MPI_FLOAT, 3, i-half_size,
-                   MPI_COMM_WORLD);
-   }
- }else{
-   for (int i=0; i<half_size; i++){
-     MPI_Recv(&b_buffer[i*half_size], half_size, MPI_FLOAT, 0, i, MPI_COMM_WORLD, &status);
-   }
- }
-
-if (rank == 0){
-     for (int i=0; i< kI/2; i++){
-      for (int k=0; k< kK/2; k++){
-        for (int j=0; j< kJ/2; j++)
-        {
-          c[i][j] += a[i][k+half_size] * b[k+half_size][j];
-        }
-      }
-    }
- }else{
-   multiply(a_buffer, b_buffer, c_buffer);
- }
-
-*/
-
-  /*
-  if (rank != 0){
-    for (int i=0; i<half_size; i++){
-     MPI_Send(&c_buffer[i*half_size], half_size, MPI_FLOAT, 0, i, MPI_COMM_WORLD);
-   }
-  }else{
-    for (int i=0; i<half_size; i++){
-      MPI_Recv(&c[i][half_size], half_size, MPI_FLOAT, 1, i, MPI_COMM_WORLD, &status);
-    }
-    for (int i=half_size; i<kI; i++){
-      MPI_Recv(&c[i][0], half_size, MPI_FLOAT, 2, i-half_size, MPI_COMM_WORLD, &status);
-      MPI_Recv(&c[i][half_size], half_size, MPI_FLOAT, 3, i-half_size, MPI_COMM_WORLD, &status);
-    }
-  }
-*/
-
 /********************GATHER DATA*****************************/
 /*
-if (rank == 0){
-  for (int i=0; i<kI/numproc; i++){
-    for (int j=0; j<kJ; j++){
-      c[i][j] = c_buffer[i*kJ+j];
-    }
-  }
-}
-*/
-
-
 if (rank != 0){
   MPI_Send(c_buffer, cCount, MPI_FLOAT, 0, 1,
                    MPI_COMM_WORLD);
 }else{
-  //memcpy(c, c_buffer, sizeof(float)*cCount);
   offset = rows;
   memcpy(c, c_buffer, sizeof(float) * cCount);
   for (int i=1; i<numproc; i++){
@@ -276,8 +123,7 @@ if (rank != 0){
       offset += rows;
   }
 }
-
-
+*/
 
 //clog << "gathered\n";
 
@@ -285,12 +131,13 @@ if (rank != 0){
 //  0, MPI_COMM_WORLD);
 
 
-/*
+
 if (rank != 0){
   MPI_Isend(c_buffer, cCount, MPI_FLOAT, 0, 1,
                    MPI_COMM_WORLD, &request);
 }else{
   offset = rows;
+  memcpy(c, c_buffer, sizeof(float) * cCount);
   for (int i=1; i<numproc; i++){
     MPI_Irecv(&c[offset][0], cCount, MPI_FLOAT, i, 1,
                    MPI_COMM_WORLD, &request);
@@ -298,6 +145,6 @@ if (rank != 0){
       MPI_Wait(&request, &status);
   }
 }
-*/
+
 
 }
