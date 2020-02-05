@@ -39,10 +39,10 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   b_buffer = (float*) std::aligned_alloc(64, bCount*sizeof *b_buffer);
   c_buffer = (float*) std::aligned_alloc(64, cCount*sizeof *c_buffer);
   std::memset(c_buffer, 0, sizeof(float) * cCount);
-/*
+
   int rows = kI/numproc;
   int offset = rows;
-*/
+
   MPI_Status status;
 
   /**************SEND BLOCKS OF DATA*******************/
