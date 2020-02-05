@@ -166,7 +166,7 @@ MPI_Request request;
   //int BLOCK_SIZE_K = 8;
   //int BLOCK_SIZE_J = kJ/32;
   int BLOCK_SIZE_I = 8;
-  int BLOCK_SIZE_K = 16;
+  int BLOCK_SIZE_K = 8;
   int BLOCK_SIZE_J = 16;
   //int index_a, index_b, index_c;
 
@@ -175,10 +175,10 @@ MPI_Request request;
         for (int j=0; j< kJ; j+=BLOCK_SIZE_J){
       for (int i0=i; i0<i+BLOCK_SIZE_I; i0++){
         //index_a = i0*kJ+k;
-        for (int k0=k; k0<k+BLOCK_SIZE_K; k0++){
+        for (int j0=j; j0<j+BLOCK_SIZE_J; j0++){
           //index_b = k0*kJ+j;
           //index_c = i0*kJ+j;
-          for (int j0=j; j0<j+BLOCK_SIZE_J; j0++){
+          for (int k0=k; k0<k+BLOCK_SIZE_K; k0++){
             
                   //if (rank==0){
                   //  c[i0][j0] += a_buffer[index_a] * b_buffer[index_b];
