@@ -162,7 +162,7 @@ MPI_Request request;
 /***********************CALCULATE*************************/
 
 
-  int BLOCK_SIZE_I = 128;
+  int BLOCK_SIZE_I = 64;
   int BLOCK_SIZE_K = 16;
   int BLOCK_SIZE_J = kJ/4;
   //int BLOCK_SIZE_I = 8;
