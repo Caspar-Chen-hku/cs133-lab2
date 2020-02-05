@@ -41,11 +41,11 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   float *b_buffer;
   float *c_buffer;
   
-  if (rank != 0){
+  //if (rank != 0){
     a_buffer = (float*) std::aligned_alloc(64, aCount*sizeof *a_buffer);
     b_buffer = (float*) std::aligned_alloc(64, bCount*sizeof *b_buffer);
     c_buffer = (float*) std::aligned_alloc(64, cCount*sizeof *c_buffer);
-  }
+  //}
 
 /*
   if (rank == 0){
@@ -83,22 +83,21 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
 
   if (rank == 0){
     for (int i=1; i<numproc; i++){
-      MPI_Send(&a[offset][0], aCount, MPI_FLOAT, i, 1,
-                   MPI_COMM_WORLD);
+      //MPI_Send(&a[offset][0], aCount, MPI_FLOAT, i, 1,
+      //             MPI_COMM_WORLD);
       MPI_Send(b, bCount, MPI_FLOAT, i, 2, MPI_COMM_WORLD);
       offset += rows;
     }
   }else{
-    MPI_Recv(a_buffer, aCount, MPI_FLOAT, 0, 1, MPI_COMM_WORLD, &status);
+    //MPI_Recv(a_buffer, aCount, MPI_FLOAT, 0, 1, MPI_COMM_WORLD, &status);
     MPI_Recv(b_buffer, bCount, MPI_FLOAT, 0, 2, MPI_COMM_WORLD, &status);
   }
 
 //clog << "sent\n";
 
-/*
 MPI_Scatter(a, aCount, MPI_FLOAT, a_buffer,
     aCount, MPI_FLOAT, 0,  MPI_COMM_WORLD);
-*/
+
 /*
 MPI_Request request;
   if (rank == 0){
@@ -179,7 +178,7 @@ MPI_Request request;
           for (int j0=j; j0<j+BLOCK_SIZE_J; j0++){
             
                   if (rank==0){
-                    c[i0][j0] += a[i0][k0] * b[k0][j0];
+                    c[i0][j0] += a_buffer[index_a] * b[k0][j0];
                   }else{
                     c_buffer[index_c] += a_buffer[index_a] * b_buffer[index_b];
                     index_b++;
