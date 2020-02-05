@@ -179,7 +179,7 @@ MPI_Request request;
         for (int j0=j; j0<j+BLOCK_SIZE_J; j0++){
           //index_b = k0*kJ+j;
           //index_c = i0*kJ+j;
-          temp = 0;
+          temp = c_buffer[i0*kJ+j0];
           for (int k0=k; k0<k+BLOCK_SIZE_K; k0++){
             
                   //if (rank==0){
@@ -191,7 +191,7 @@ MPI_Request request;
                   //}
                   //index_b++;
             }
-            c_buffer[i0*kJ+j0] += temp;
+            c_buffer[i0*kJ+j0] = temp;
             //index_a++;
           }
         }
