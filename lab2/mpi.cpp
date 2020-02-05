@@ -313,11 +313,12 @@ if (rank == 0){
 }
 */
 
-/*
+
 if (rank != 0){
   MPI_Send(c_buffer, cCount, MPI_FLOAT, 0, 1,
                    MPI_COMM_WORLD);
 }else{
+  memcpy(c, c_buffer, sizeof(float)*cCount);
   offset = rows;
   for (int i=1; i<numproc; i++){
     MPI_Recv(&c[offset][0], cCount, MPI_FLOAT, i, 1,
@@ -325,13 +326,13 @@ if (rank != 0){
       offset += rows;
   }
 }
-*/
+
 
 
 //clog << "gathered\n";
 
-MPI_Gather(c_buffer, cCount, MPI_FLOAT, c, cCount, MPI_FLOAT,
-  0, MPI_COMM_WORLD);
+//MPI_Gather(c_buffer, cCount, MPI_FLOAT, c, cCount, MPI_FLOAT,
+//  0, MPI_COMM_WORLD);
 
 
 /*
