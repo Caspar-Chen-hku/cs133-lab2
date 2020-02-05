@@ -3,8 +3,10 @@
 #include <mpi.h>
 #include <stdlib.h>
 #include <cstring>
+#include <iostream>
 
 #include "../lab1/gemm.h"
+using std::clog;
 
 // Using declarations, if any...
 
@@ -75,11 +77,11 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
     MPI_Recv(b_buffer, bCount, MPI_FLOAT, 0, 2, MPI_COMM_WORLD, &status);
   }
 
-
+  clog << "sent b\n"
 MPI_Scatter(a, aCount, MPI_FLOAT, a_buffer,
     aCount, MPI_FLOAT, 0,  MPI_COMM_WORLD);
 
-
+clog << "sent a\n";
 /*
 MPI_Request request;
   if (rank == 0){
@@ -257,7 +259,7 @@ if (rank != 0){
 MPI_Gather(c_buffer, cCount, MPI_FLOAT, c, cCount, MPI_FLOAT,
   0, MPI_COMM_WORLD);
 
-
+clog << "gathered c\n";
 /*
 if (rank != 0){
   MPI_Isend(c_buffer, cCount, MPI_FLOAT, 0, 1,
