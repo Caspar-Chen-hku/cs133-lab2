@@ -3,10 +3,10 @@
 #include <mpi.h>
 #include <stdlib.h>
 #include <cstring>
-//#include <iostream>
+#include <iostream>
 
 #include "../lab1/gemm.h"
-//using std::clog;
+using std::clog;
 
 // Using declarations, if any...
 
@@ -71,6 +71,8 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
     MPI_Recv(a_buffer, aCount, MPI_FLOAT, 0, 1, MPI_COMM_WORLD, &status);
     MPI_Recv(b_buffer, bCount, MPI_FLOAT, 0, 2, MPI_COMM_WORLD, &status);
   }
+
+clog << "sent\n";
 
 /*
 MPI_Scatter(a, aCount, MPI_FLOAT, a_buffer,
@@ -202,6 +204,8 @@ for (int i=0; i< kI; i+=64){
         }
   }
 
+  clog << "calculated\n";
+
 /*
  if (rank == 0) {
    for (int i=0; i<half_size; i++){
@@ -282,6 +286,8 @@ if (rank != 0){
       offset += rows;
   }
 }
+
+clog << "gathered\n";
 
 
 /*
