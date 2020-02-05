@@ -145,7 +145,7 @@ MPI_Request request;
 */
 /***********************CALCULATE*************************/
 
-
+/*
   int BLOCK_SIZE_I = 256;
   int BLOCK_SIZE_K = 32;
   int BLOCK_SIZE_J = kJ/2;
@@ -175,8 +175,8 @@ MPI_Request request;
       }
       }
   }
+*/
 
-/*
 for (int i=0; i< kI/numproc; i+=64){
         for (int k=0; k< kK; k+=8){
           alignas(2048) float a_temp[64][8];
@@ -185,7 +185,7 @@ for (int i=0; i< kI/numproc; i+=64){
               if (rank == 0){
                 a_temp[ii-i][kk-k] = a[ii][kk];
               }else{
-                a_temp[ii-i][kk-k] = a_buffer[ii][kk];
+                a_temp[ii-i][kk-k] = a_buffer[ii*kK+kk];
               }
               
             }
@@ -201,16 +201,21 @@ for (int i=0; i< kI/numproc; i+=64){
                     temp += a_temp[i0-i][k0-k] * b[k0][j0];
                   }else
                   {
-                    temp += a_temp[i0-i][k0-k] * b_buffer[k0][j0];
+                    temp += a_temp[i0-i][k0-k] * b_buffer[k0*kJ+j0];
                   }
                 }
-                c[i0][j0] += temp;
+                if (rank == 0){
+                  c[i0][j0] += temp;
+                }else{
+                  c_buffer[i0*kJ+j0] += temp;
+                }
+                
               }
             }
           }
         }
   }
-*/
+
  // clog << "calculated\n";
 
 /*
