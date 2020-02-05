@@ -48,8 +48,13 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   }
   */
 
- float a_buffer[kI/numproc][kK];
- float b_buffer[kK][kJ];
+ float (*a_buffer)[kK] = nullptr;
+ float (*b_buffer)[kJ] = nullptr;
+
+  if (rank != 0){
+    a_buffer = new float[kI/numproc][kK];
+    b_buffer = new float[kK][kJ];
+  }
  //float c_buffer[kI/numproc][kJ];
 
   int rows = kI/numproc;
