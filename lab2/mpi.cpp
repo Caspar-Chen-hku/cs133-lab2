@@ -82,6 +82,7 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
 
 
   if (rank == 0){
+  memcpy(b_buffer, b, bCount*sizeof(float));
     for (int i=1; i<numproc; i++){
       //MPI_Send(&a[offset][0], aCount, MPI_FLOAT, i, 1,
       //             MPI_COMM_WORLD);
@@ -97,10 +98,6 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
 
 MPI_Scatter(a, aCount, MPI_FLOAT, a_buffer,
     aCount, MPI_FLOAT, 0,  MPI_COMM_WORLD);
-
-if (rank == 0){
-  memcpy(b_buffer, b, bCount*sizeof(float));
-}
 
 
 /*
