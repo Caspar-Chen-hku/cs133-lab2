@@ -11,7 +11,7 @@ test: gemm
 	mpiexec -np $(np) ./$^
 
 gemm: $(SRCS)
-	$(CXX) $(subst -fopenmp,,$(CXXFLAGS)) -o $@ $(filter %.cpp %.a %.o, $^) -lgomp -std=c++17
+	$(CXX) $(subst -fopenmp,,$(CXXFLAGS)) -o $@ $(filter %.cpp %.a %.o, $^) -lgomp
 
 ../lab1/gemm-baseline.a:
 	$(MAKE) -C ../lab1 gemm-baseline.a

@@ -18,8 +18,6 @@ int main(int argc, char** argv) {
   MPI_Init(&argc, &argv);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-  //clog << "\nrank: " << rank << ", numproc: " << numproc << "\n";
-
   if (rank == kRoot) {
     a = new float[kI][kK];
     b = new float[kK][kJ];
@@ -39,9 +37,7 @@ int main(int argc, char** argv) {
   MPI_Barrier(MPI_COMM_WORLD);
   double end = MPI_Wtime();
 
-  
   if (rank == kRoot) {
-
     double run_time = end - begin;
     float gflops = 2.0 * kI * kJ * kK / (run_time * 1e9);
     clog << "Time: " << run_time << " s\n";
