@@ -7,7 +7,7 @@
 
 #include "../lab1/gemm.h"
 //using std::clog;
-using namespace std;
+//using namespace std;
 
 // Using declarations, if any...
 
@@ -36,9 +36,9 @@ void GemmParallelBlocked(const float a[kI][kK], const float b[kK][kJ],
   float *b_buffer;
   float *c_buffer;
   
-  a_buffer = (float*) aligned_alloc(64, aCount*sizeof *a_buffer);
-  b_buffer = (float*) aligned_alloc(64, bCount*sizeof *b_buffer);
-  c_buffer = (float*) aligned_alloc(64, cCount*sizeof *c_buffer);
+  a_buffer = (float*) std::aligned_alloc(64, aCount*sizeof *a_buffer);
+  b_buffer = (float*) std::aligned_alloc(64, bCount*sizeof *b_buffer);
+  c_buffer = (float*) std::aligned_alloc(64, cCount*sizeof *c_buffer);
   std::memset(c_buffer, 0, sizeof(float) * cCount);
 
   MPI_Status status;
